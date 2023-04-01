@@ -14,8 +14,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
+        'guard' => 'api',
+//        'passwords' => 'users',
     ],
 
     /*
@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'dreamer_admin_auth_users',
+        ],
     ],
 
     /*
@@ -63,6 +67,12 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'dreamer_admin_auth_users' => [
+//            'driver' => 'dreamer_admin_auth_user_provider',
+            'driver' => 'eloquent',
+            'model' => App\Lib\Business\Authentication\StaffAccount\Models\AuthUser::class,
         ],
 
         // 'users' => [

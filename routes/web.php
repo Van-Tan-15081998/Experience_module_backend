@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Master\FavoriteApp\Knowledge\KnowledgeController;
+use App\Http\Controllers\Master\LaravelResearch\EloquentORM\EmployeeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +18,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/laravel_research/{id}', [EmployeeController::class, 'getById']);
+
+
+Route::get('/master/favorite_app/knowledge/{id}', [KnowledgeController::class, 'getById']);
+
+Route::get('/master/favorite_app/knowledge/list_by_subject/{subjectCode}', [KnowledgeController::class, 'getAllParentBySubjectCode']);
+
+Route::get('/master/favorite_app/knowledge/list_by_parent_knowledge_code/{parentKnowledgeCode}', [KnowledgeController::class, 'getChildrenByParentKnowledgeCode']);
