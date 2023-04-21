@@ -3,12 +3,17 @@
 namespace App\Lib\Business\App\Master\FavoriteApp\Book\Entities;
 
 use App\Lib\Business\App\Master\FavoriteApp\Book\Models\AdminBookCondition;
+use App\Lib\Business\App\Master\FavoriteApp\Book\Models\AdminBookModel;
 use App\Lib\Business\App\Master\FavoriteApp\Book\Models\AdminBookPaginationModel;
+use App\Lib\Business\App\Master\FavoriteApp\Book\Models\AdminBookUpdateParam;
 use App\Lib\Business\App\Master\FavoriteApp\Book\Models\BookModel;
-use App\Lib\Business\Common\Exception\ExperienceExceptionConverter;
+use App\Lib\Business\Common\Exception\DreamerBusinessException;
+use App\Lib\Business\Common\Exception\DreamerExceptionConverter;
+use App\Lib\Business\Constants\DreamerCommonErrorCode;
 use App\Lib\Common\Core\DataSource\Models\PageInfo;
 use App\Lib\Common\Core\DataSource\Models\PaginationInfo;
 use App\Lib\Common\Core\DataSource\Models\PaginationModel;
+use App\Lib\Common\Type\DreamerTypeList;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -60,7 +65,7 @@ class BookEntity extends Model
             $page = $this->paginateByCondition($pageInfo, $condition);
 
         } catch (Exception $e) {
-            ExperienceExceptionConverter::convertException($e);
+            DreamerExceptionConverter::convertException($e);
         }
 
         return $page;
@@ -115,7 +120,7 @@ class BookEntity extends Model
 
         $limit = $pageInfo->getLimitCount();
 
-        $tempQuery = $query;
+        $originalQuery = $query;
 
         $query .= " LIMIT " . (($start - 1) * $limit) . " , " . $limit;
 
@@ -124,7 +129,8 @@ class BookEntity extends Model
         $cnt = 0;
 
         if(count($data) > 0) {
-            $countResultQuery = 'SELECT COUNT(*) as paginate_total_count FROM (' . preg_replace('/;/i', '', $query, 1) . ') AS subquery;';
+//            $countResultQuery = 'SELECT COUNT(*) as paginate_total_count FROM (' . preg_replace('/;/i', '', $query, 1) . ') AS subquery;';
+            $countResultQuery = 'SELECT COUNT(*) as paginate_total_count FROM (' . $originalQuery . ') AS subquery;';
             $countResultExecute = DB::select($countResultQuery);
 
             $cnt = $countResultExecute[0]->paginate_total_count;
@@ -133,12 +139,12 @@ class BookEntity extends Model
 
                 $start = 1;
 
-                $tempQuery .= " LIMIT " . (($start - 1) * $limit) . " , " . $limit;
+                $originalQuery .= " LIMIT " . (($start - 1) * $limit) . " , " . $limit;
 
-                $data = DB::select($tempQuery);
+                $data = DB::select($originalQuery);
 
                 if(count($data) > 0) {
-                    $countResultQuery = 'SELECT COUNT(*) as paginate_total_count FROM (' . preg_replace('/;/i', '', $query, 1) . ') AS subquery;';
+                    $countResultQuery = 'SELECT COUNT(*) as paginate_total_count FROM (' . $originalQuery . ') AS subquery;';
                     $countResultExecute = DB::select($countResultQuery);
 
                     $cnt = $countResultExecute[0]->paginate_total_count;
@@ -167,39 +173,145 @@ class BookEntity extends Model
         return $return;
     }
 
-    public function getById(int $bookId) : array {
-        $result = DB::table($this->table)
-            ->where('book_id', $bookId)
-            ->select('*'
-            )->get()->toArray();
+    public function getById(int $bookId): AdminBookModel
+    {
+        $detail = null;
 
-        if (empty($result)) {
-            return [];
+        try {
+            $detail = $this->selectById($bookId);
+
+
+        } catch (Exception $e) {
+            DreamerExceptionConverter::convertException($e);
         }
 
-        $result = BookModel::createFromRecord($result[0]);
+        if(is_null($detail)) {
+            throw new DreamerBusinessException( DreamerCommonErrorCode::E00000000002()->getCode(),
+                DreamerCommonErrorCode::E00000000002()->getDescription());
+        }
 
-        return $result->toArray();
+        return $detail;
     }
 
-    public function getAll() : array {
-        $result = [];
-        $bookList = DB::table($this->table)
-            ->select(
-                '*'
-            )->get()->toArray();
+    public function getEditBookById(int $bookId): AdminBookModel
+    {
+        $detail = null;
 
-        if (empty($bookList)) {
-            return [];
+        try {
+            $detail = $this->selectEditBoothById($bookId);
+
+
+        } catch (Exception $e) {
+            DreamerExceptionConverter::convertException($e);
         }
 
-        foreach ($bookList as $key => $value) {
-            $result[$key] = BookModel::createFromRecord($value);
-
-            // convert to array
-            $result[$key] = $result[$key]->toArray();
+        if(is_null($detail)) {
+            throw new DreamerBusinessException( DreamerCommonErrorCode::E00000000002()->getCode(),
+                DreamerCommonErrorCode::E00000000002()->getDescription());
         }
 
-        return $result;
+        return $detail;
+    }
+
+//    public function getById(int $bookId) : array {
+//        $result = DB::table($this->table)
+//            ->where('book_id', $bookId)
+//            ->select('*'
+//            )->get()->toArray();
+//
+//        if (empty($result)) {
+//            return [];
+//        }
+//
+//        $result = BookModel::createFromRecord($result[0]);
+//
+//        return $result->toArray();
+//    }
+//
+//    public function getAll() : array {
+//        $result = [];
+//        $bookList = DB::table($this->table)
+//            ->select(
+//                '*'
+//            )->get()->toArray();
+//
+//        if (empty($bookList)) {
+//            return [];
+//        }
+//
+//        foreach ($bookList as $key => $value) {
+//            $result[$key] = BookModel::createFromRecord($value);
+//
+//            // convert to array
+//            $result[$key] = $result[$key]->toArray();
+//        }
+//
+//        return $result;
+//    }
+
+    public function selectById(int $boothId): ?AdminBookModel
+    {
+        $query =
+            "SELECT *"
+            . " FROM favorite_app__books"
+            . " WHERE favorite_app__books.book_id = " . $boothId
+            . " AND favorite_app__books.is_deleted = 0 ";
+
+        $result = DB::select($query);
+
+        if (is_null($result) || empty($result)) {
+            return null;
+        }
+
+        $adminBook =  AdminBookModel::createFromRecord($result[0]);
+
+        return $adminBook;
+    }
+
+    public function selectEditBoothById(int $boothId): ?AdminBookModel
+    {
+        $query =
+            "SELECT *"
+            . " FROM favorite_app__books"
+            . " WHERE favorite_app__books.book_id = " . $boothId
+            . " AND favorite_app__books.is_deleted = 0 ";
+
+        $result = DB::select($query);
+
+        if (is_null($result) || empty($result)) {
+            return null;
+        }
+
+        $adminBook =  AdminBookModel::createFromRecordForEdit($result[0]);
+
+        return $adminBook;
+    }
+
+    public function insert(AdminBookUpdateParam $param): int {
+
+        $bookId = DB::table('favorite_app__books')->insertGetId(
+            ['title' => $param->getTitle()]
+        );
+
+        $this->insertPublisher($bookId, $param->getPublisherList());
+
+        return $bookId;
+    }
+
+    private function insertPublisher(int $bookId, DreamerTypeList $publisherList) {
+        /**
+         * $publisherList là tham số dạng mảng:
+         * [
+         *  { publisherId : 1 },
+         *  { publisherId : 2 },
+         *  { publisherId : 3 },
+         * ]
+        **/
+
+        foreach ($publisherList->getList() as $publisherId) {
+            DB::table('favorite_app__book_publisher_allocations')->insert([
+                ['book_id' => $bookId, 'publisher_id' => $publisherId['publisherId']],
+            ]);
+        }
     }
 }

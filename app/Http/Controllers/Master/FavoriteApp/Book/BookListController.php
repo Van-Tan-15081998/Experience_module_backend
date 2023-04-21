@@ -8,7 +8,7 @@ use App\Http\Controllers\Base\FavoriteApp\Book\BookBaseController;
 use App\Http\Controllers\Base\FavoriteApp\Book\Models\BookScreenRoleModel;
 use App\Http\Controllers\Base\Model\ScreenRoleModel;
 use App\Lib\Business\App\Master\FavoriteApp\Book\BookBusiness;
-use App\Lib\Business\Common\Exception\ExperienceBusinessException;
+use App\Lib\Business\Common\Exception\DreamerBusinessException;
 use App\Lib\Business\Specific\Staff\AccountRole\Models\RoleFunctionListModel;
 use App\Lib\Business\Specific\Staff\AccountRole\Models\RoleFunctionModel;
 use App\Lib\WebCommon\Helpers\ResponseArrayModel;
@@ -79,7 +79,7 @@ class BookListController extends BookBaseController
             $data->addResponseItem('page', $page);
 
             $isSucceeded = true;
-        } catch (ExperienceBusinessException $e) {
+        } catch (DreamerBusinessException $e) {
 
             $code = $e->getExceptionCode();
 
@@ -96,7 +96,7 @@ class BookListController extends BookBaseController
         if($isSucceeded) {
             try {
                 // TODO
-            } catch (ExperienceBusinessException $e) {
+            } catch (DreamerBusinessException $e) {
                 // TODO
             }
         }

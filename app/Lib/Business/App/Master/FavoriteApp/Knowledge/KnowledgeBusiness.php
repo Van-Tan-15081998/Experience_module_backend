@@ -7,8 +7,8 @@ use App\Lib\Business\App\Master\FavoriteApp\Knowledge\Models\KnowledgeModel;
 use App\Lib\Business\App\Master\FavoriteApp\Knowledge\Models\KnowledgeUpdateParam;
 use App\Lib\Business\App\Master\FavoriteApp\Knowledge\Requests\KnowledgeUpdateRequest;
 use App\Lib\Business\Base\ExperienceBaseBusiness;
-use App\Lib\Business\Common\Exception\ExperienceValidationBusinessException;
-use App\Lib\Business\Common\Models\ExperienceValidationErrors;
+use App\Lib\Business\Common\Exception\DreamerValidationBusinessException;
+use App\Lib\Business\Common\Models\DreamerValidationErrors;
 use Illuminate\Http\Request;
 
 class KnowledgeBusiness extends ExperienceBaseBusiness
@@ -36,7 +36,7 @@ class KnowledgeBusiness extends ExperienceBaseBusiness
         $errors = $this->validateAddParams($updateParam);
 
         if(isset($errors)) {
-            throw new ExperienceValidationBusinessException($errors);
+            throw new DreamerValidationBusinessException($errors);
         }
 
         return $this->knowledgeEntity->add($updateParam);
@@ -58,8 +58,8 @@ class KnowledgeBusiness extends ExperienceBaseBusiness
         return $this->knowledgeEntity->getChildrenByParentKnowledgeCode($parentKnowledgeCode);
     }
 
-    public function validateAddParams(KnowledgeUpdateParam $updateParam): ?ExperienceValidationErrors {
-        $errors = new ExperienceValidationErrors();
+    public function validateAddParams(KnowledgeUpdateParam $updateParam): ?DreamerValidationErrors {
+        $errors = new DreamerValidationErrors();
 
         // hàm này để validate các vấn đề liên quan, ngoại trừ validate của request như: bắt buộc nhập,...
 

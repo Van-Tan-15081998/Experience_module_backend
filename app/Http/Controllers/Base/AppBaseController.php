@@ -24,6 +24,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class AppBaseController extends Controller
 {
+    protected const OPTIONAL_MODE = "mode";
+
     public function __construct()
     {
         $this->init();
@@ -140,8 +142,8 @@ abstract class AppBaseController extends Controller
         );
     }
 
-    protected function apiResponseSimple(   Object $data = null,
-                                            array $statuses = null   ): Response
+    protected function apiResponseSimple(   DreamerTypeObject $data = null,
+                                            DreamerTypeList $statuses = null   ): Response
     {
         $responseData = [];
         if (isset($data)) {
@@ -150,7 +152,7 @@ abstract class AppBaseController extends Controller
 
         $responseStatuses = [];
         if(isset($statuses)) {
-            $responseStatuses = $statuses;
+            $responseStatuses = $statuses->toArray();
         }
 
         return ResponseHelper::responseOnSuccessful(

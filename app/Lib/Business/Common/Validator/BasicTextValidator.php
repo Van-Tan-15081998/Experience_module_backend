@@ -2,7 +2,7 @@
 
 namespace App\Lib\Business\Common\Validator;
 
-use App\Lib\Business\Common\Exception\ExperienceInvalidParameterException;
+use App\Lib\Business\Common\Exception\DreamerInvalidParameterException;
 use Illuminate\Contracts\Validation\ImplicitRule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -28,11 +28,11 @@ class BasicTextValidator implements ImplicitRule
             $maxLength = null;
         }
         if ((! is_null($minLength)) && (is_null($maxLength))) {
-            throw new ExperienceInvalidParameterException();
+            throw new DreamerInvalidParameterException();
         }
         if (((! is_null($minLength)) && (! is_null($maxLength))) &&
             ($minLength > $maxLength)) {
-            throw new ExperienceInvalidParameterException();
+            throw new DreamerInvalidParameterException();
         }
 
         $this->minLength = $minLength;

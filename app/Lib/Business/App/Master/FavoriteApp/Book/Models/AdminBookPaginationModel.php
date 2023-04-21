@@ -11,7 +11,8 @@ class AdminBookPaginationModel extends PaginationModel
         $convertArray = [];
 
         foreach ($result as $row) {
-            $convertArray[] = BookModel::createFromRecord($row);
+//            $convertArray[] = BookModel::createFromRecord($row);
+            $convertArray[] = AdminBookListModel::createFromRecord($row);
         }
 
         $this->setList($convertArray);

@@ -3,14 +3,17 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Seeders\FavoriteApp\BookLanguageAllocationSeeder;
 use Database\Seeders\FavoriteApp\BookSeeder;
 use Database\Seeders\FavoriteApp\KnowledgeSeeder;
+use Database\Seeders\FavoriteApp\LanguageSeeder;
 use Database\Seeders\FavoriteApp\MasterFunction;
 use Database\Seeders\FavoriteApp\MasterRole;
 use Database\Seeders\FavoriteApp\MasterRoleFunction;
 use Database\Seeders\FavoriteApp\MasterRoleGroup;
 use Database\Seeders\FavoriteApp\MasterRoleGroupRoleAllocation;
 use Database\Seeders\FavoriteApp\MasterStaffAccountRoleGroupAllocation;
+use Database\Seeders\FavoriteApp\PublisherSeeder;
 use Database\Seeders\LaravelResearch\DepartmentSeeder;
 use Database\Seeders\LaravelResearch\EmployeePositionSeeder;
 use Database\Seeders\LaravelResearch\EmployeeSeeder;
@@ -26,12 +29,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
         $this->call([
             DepartmentSeeder::class,
             EmployeePositionSeeder::class,
@@ -39,6 +36,9 @@ class DatabaseSeeder extends Seeder
             PositionSeeder::class,
             KnowledgeSeeder::class,
             BookSeeder::class,
+            PublisherSeeder::class,
+            BookLanguageAllocationSeeder::class,
+            LanguageSeeder::class,
 
             StaffAccountSeeder::class,
             MasterFunction::class,

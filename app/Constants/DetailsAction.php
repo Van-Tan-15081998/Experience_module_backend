@@ -23,4 +23,18 @@ class DetailsAction extends Enum
     {
         return ($this->getMode() === $mode);
     }
+
+    public static function fromKey(mixed $fromKey): ?self
+    {
+        $array = parent::toArray();
+        if(isset($array)) {
+            foreach($array as $key => $value) {
+                if($fromKey == $value[0]) {
+                    return parent::__callStatic($key, []);
+                }
+            }
+        }
+
+        return null;
+    }
 }

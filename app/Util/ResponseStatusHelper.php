@@ -2,18 +2,20 @@
 
 namespace App\Util;
 
-use App\Lib\Business\Constants\CommonErrorCode;
+use App\Lib\Business\Constants\DreamerCommonErrorCode;
+use App\Lib\Common\Type\DreamerTypeList;
+use App\Lib\WebCommon\Constants\MessageType;
 use App\Lib\WebCommon\Helpers\ResponseStatus;
 
 class ResponseStatusHelper
 {
-    public static function toList(?ResponseStatus $status): ?array
+    public static function toList(?ResponseStatus $status): ?DreamerTypeList
     {
         $statuses = null;
 
         if(isset($status)) {
-            $statuses = array();
-            $statuses[] = $status;
+            $statuses = new DreamerTypeList();
+            $statuses->add($status);
         }
 
         return $statuses;
@@ -26,8 +28,8 @@ class ResponseStatusHelper
             'admin_common_message.common_err_role_unauthorized_00-13-000002';
 
         return ResponseStatus::createErrorStatus(
-            CommonErrorCode::E00000000001()->getCode(),
-            CommonErrorCode::E00000000001()->getDescription(),
+            DreamerCommonErrorCode::E00000000001()->getCode(),
+            DreamerCommonErrorCode::E00000000001()->getDescription(),
             $message
         );
     }
@@ -36,5 +38,13 @@ class ResponseStatusHelper
     {
         $target = get_object_vars($this);
         return json_decode(json_encode($target), true);
+    }
+
+    public static function createSaveSuccessful(): ResponseStatus
+    {
+        return ResponseStatus::createSuccessfulStatus(
+            MessageType::INFO(),
+            'Đã đăng ký'
+        );
     }
 }

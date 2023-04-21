@@ -2,7 +2,8 @@
 
 namespace App\Lib\WebCommon\Helpers;
 
-use App\Lib\Business\Common\Models\ExperienceValidationErrors;
+use App\Lib\Business\Common\Models\DreamerValidationErrors;
+use App\Lib\Common\Type\DreamerTypeList;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Validation\ValidationException;
 
@@ -53,9 +54,14 @@ class ResponseHelper
                 'errors' => $exception->errors()
             ]
         ], 422);
+//        return response()->json([
+//            'contents' => [
+//                'errors' => $exception->errors()
+//            ]
+//        ]);
     }
 
-    public static function responseOnValidationErrors(ExperienceValidationErrors $errors): Response
+    public static function responseOnValidationErrors(DreamerValidationErrors $errors): Response
     {
         return response()->json([
             'contents' => [
@@ -93,16 +99,27 @@ class ResponseHelper
             $optional,
         );
 
-        $errors = array();
-        $errors[] = $error;
+        $errors = new DreamerTypeList();
+        $errors->add($error);
 
         return ResponseHelper::responseOnErrors($statusCode, $errors);
     }
 
-    public static function responseOnErrors(int $statusCode, array $errors): Response
+    public static function responseOnErrors(int $statusCode, DreamerTypeList $errors): Response
     {
         return response()->json([
-            'errors' => $errors
+            'errors' => $errors->toArray()
         ], $statusCode);
+    }
+
+    public static function responseOnBusinessErrorFromStatus(ResponseStatus $status): Response
+    {
+        return ResponseHelper::responseOnError(
+            400,
+            $status->getCode(),
+            $status->getDescription(),
+            $status->getMessage(),
+            $status->getOptional()
+        );
     }
 }

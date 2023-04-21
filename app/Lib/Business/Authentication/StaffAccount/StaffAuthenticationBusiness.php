@@ -2,10 +2,10 @@
 
 namespace App\Lib\Business\Authentication\StaffAccount;
 
-use App\Lib\Business\Authentication\Exception\AuthIdManyExistsException;
-use App\Lib\Business\Authentication\Exception\AuthIdNotFoundException;
-use App\Lib\Business\Authentication\Exception\AuthMissPasswordException;
-use App\Lib\Business\Authentication\Exception\AuthUnUsableException;
+use App\Lib\Business\Authentication\Exception\DreamerAuthIdManyExistsExceptionDreamer;
+use App\Lib\Business\Authentication\Exception\DreamerAuthIdNotFoundExceptionDreamer;
+use App\Lib\Business\Authentication\Exception\DreamerAuthMissPasswordExceptionDreamer;
+use App\Lib\Business\Authentication\Exception\DreamerAuthUnUsableExceptionDreamer;
 use App\Lib\Business\Authentication\StaffAccount\Entities\StaffAuthenticationEntity;
 use App\Lib\Business\Authentication\StaffAccount\Models\StaffAuthenticationModel;
 use App\Lib\Business\Base\ExperienceBaseBusiness;
@@ -27,13 +27,13 @@ class StaffAuthenticationBusiness extends ExperienceBaseBusiness
         $account = $this->getAccountByLoginId($loginId);
 
         if(!Hash::check($password, $account->getPassword())) {
-            throw new AuthMissPasswordException();
+            throw new DreamerAuthMissPasswordExceptionDreamer();
         }
 
         // TODO
         if(!$this->authorizeAccount($account)) {
             $this->updateLoginAuthenticationResult($account, false);
-            throw new AuthUnUsableException();
+            throw new DreamerAuthUnUsableExceptionDreamer();
         }
 
         $this->updateLoginAuthenticationResult($account, true);
@@ -58,7 +58,7 @@ class StaffAuthenticationBusiness extends ExperienceBaseBusiness
                 $count = count($accountList);
 
                 if($count > 1) {
-                    throw new AuthIdManyExistsException();
+                    throw new DreamerAuthIdManyExistsExceptionDreamer();
                 }
 
                 if($count > 0) {
@@ -70,7 +70,7 @@ class StaffAuthenticationBusiness extends ExperienceBaseBusiness
         }
 
         if($account === null) {
-            throw new AuthIdNotFoundException();
+            throw new DreamerAuthIdNotFoundExceptionDreamer();
         }
 
         return $account;
@@ -86,7 +86,7 @@ class StaffAuthenticationBusiness extends ExperienceBaseBusiness
         }
 
         if($account === null) {
-            throw new AuthIdNotFoundException();
+            throw new DreamerAuthIdNotFoundExceptionDreamer();
         }
 
         return $account;
