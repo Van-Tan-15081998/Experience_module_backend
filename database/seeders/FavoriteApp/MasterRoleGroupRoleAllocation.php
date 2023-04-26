@@ -24,7 +24,7 @@ class MasterRoleGroupRoleAllocation extends Seeder
             ],
             [
                 'role_group_role_allocation_id'     => 2,
-                'role_group_id'                     => 1,
+                'role_group_id'                     => 2,
                 'role_id'                           => 2
             ]
         ]);

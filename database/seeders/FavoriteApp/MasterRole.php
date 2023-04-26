@@ -24,7 +24,7 @@ class MasterRole extends Seeder
             ],
             [
                 'role_id'       => 2,
-                'name'          => 'Book Role Only View List',
+                'name'          => 'Subject Role Master',
                 'sequence'      => 0
             ]
         ]);

@@ -9,12 +9,13 @@ use App\Http\Controllers\Base\FavoriteApp\Book\Models\BookScreenRoleModel;
 use App\Http\Controllers\Base\Model\ScreenRoleModel;
 use App\Lib\Business\App\Master\FavoriteApp\Book\BookBusiness;
 use App\Lib\Business\Common\Exception\DreamerBusinessException;
-use App\Lib\Business\Common\Exception\TestException;
+use App\Lib\Business\Common\Exception\DreamerInvalidParameterException;
 use App\Lib\Business\Constants\DreamerCommonErrorCode;
 use App\Lib\Business\Specific\Staff\AccountRole\Models\RoleFunctionListModel;
 use App\Lib\Business\Specific\Staff\AccountRole\Models\RoleFunctionModel;
 use App\Lib\Common\Type\DreamerTypeList;
 use App\Lib\Common\Type\DreamerTypeObject;
+use App\Lib\Common\Util\DreamerNumberUtil;
 use App\Lib\WebCommon\Constants\MessageType;
 use App\Lib\WebCommon\Helpers\ResponseArrayModel;
 use App\Lib\WebCommon\Helpers\ResponseHelper;
@@ -39,12 +40,12 @@ class BookDetailController extends BookBaseController
         // TODO: Implement createScreenRole() method.
         $screenRole = new AdminBookScreenRoleModel();
 
-        $screenRole->setIsBrowse($role->isBrowser());
+        $screenRole->setIsBrowse($role->isBrowse());
 
         // TODO: -0
         // re-check role based on action mode
-        if ($role->isBrowser()) {
-            $isBrowser = false;
+        if ($role->isBrowse()) {
+            $isBrowse = false;
             $isEdit = false;
             $isRegistration = false;
 
@@ -53,24 +54,24 @@ class BookDetailController extends BookBaseController
                 $mode = $screenOptional[parent::OPTIONAL_MODE];
 
                 if (DetailsAction::VIEW()->isSame($mode)) {
-                    $isBrowser = true;
+                    $isBrowse = true;
                 } elseif (DetailsAction::NEW()->isSame($mode)) {
                     // Đối với đăng ký mới
                     if ($role->isRegistration()) {
-                        $isBrowser = true;
+                        $isBrowse = true;
                         $isRegistration = true;
                         $isEdit = $role->isEdit();
                     }
                 } else if (DetailsAction::EDIT()->isSame($mode)) {
                     // Để chỉnh sửa
                     if ($role->isEdit()) {
-                        $isBrowser = true;
+                        $isBrowse = true;
                         $isEdit = true;
                     }
                 }
             }
 
-            $screenRole->setIsBrowse($isBrowser);
+            $screenRole->setIsBrowse($isBrowse);
             $screenRole->setIsRegistration($isRegistration);
             $screenRole->setIsEdit($isEdit);
         }
@@ -134,7 +135,7 @@ class BookDetailController extends BookBaseController
         $role = $this->getMyRole($screenOptional);
 
         if(!$role->isRegistration()) {
-
+            // Không được phép / Không có quyền
             return ResponseHelper::responseOnBusinessErrorFromStatus(
                 ResponseStatusHelper::createUnauthorized()
             );
@@ -146,6 +147,7 @@ class BookDetailController extends BookBaseController
         $responseItems = new ResponseArrayModel();
         $messageWarning = null;
 
+        // Quá trình thêm mới
         try {
 
             $bookId = $this->bookBusiness->add($request);
@@ -198,11 +200,89 @@ class BookDetailController extends BookBaseController
 
         return $response;
     }
-//
-//    public function update(BookUpdateRequest $request): Response
-//    {
-//
-//    }
+
+    public function update(BookUpdateRequest $request): Response
+    {
+        if(!$this->validateUpdateParams($request)) {
+            throw new DreamerInvalidParameterException();
+        }
+
+        $mode = DetailsAction::EDIT();
+
+        $screenOptional = [
+            parent::OPTIONAL_MODE => $mode->getMode()
+        ];
+
+        $role = $this->getMyRole($screenOptional);
+
+        $bookId = (int)$request->bookId;
+
+        if(!$role->isEdit()) {
+            // Không được phép / Không có quyền
+            return ResponseHelper::responseOnBusinessErrorFromStatus(
+                ResponseStatusHelper::createUnauthorized()
+            );
+        }
+
+        $response = null;
+
+        $isSucceeded = false;
+        $responseItems = new ResponseArrayModel();
+        $messageWarning = null;
+
+        // Quá trình cập nhật
+        try {
+
+            $bookId = $this->bookBusiness->update($request);
+
+            $isSucceeded = true;
+
+        } catch (DreamerBusinessException $e) {
+
+            $response = $this->responseOnBusinessError(
+                $e,
+                'Cập nhật thất bại'
+            );
+        }
+
+        // Nếu cập nhật thành công
+        if($isSucceeded) {
+            try {
+
+                $saveData = $this->bookBusiness->getById(DetailsAction::EDIT(), $bookId);
+                $responseItems->addResponseItem('data', $saveData);
+
+                $isSucceeded = true;
+
+            } catch (DreamerBusinessException $e) {
+
+                $status = ResponseStatus::createErrorStatus(
+                    $e->getExceptionCode(),
+                    $e->getExceptionMessage(),
+                    'Không lấy được dữ liệu'
+                );
+
+                $response = ResponseHelper::responseOnBusinessErrorFromStatus($status);
+
+                $isSucceeded = false;
+            }
+        }
+
+        // Nếu quá trình kết thúc bình thường, đặt response bình thường
+        if($isSucceeded) {
+
+            $statuses = ResponseStatusHelper::toList(ResponseStatusHelper::createUpdateSuccessful());
+
+            // Nếu có cảnh báo (Ví dụ: Gửi email không thành công)
+            if($messageWarning !== null) {
+                $statuses->add($messageWarning);
+            }
+
+            $response = $this->responseOnSuccessfulSimple($responseItems, $statuses, $screenOptional);
+        }
+
+        return $response;
+    }
 //
 //    public function reset(Request $request): ?Response
 //    {
@@ -319,5 +399,19 @@ class BookDetailController extends BookBaseController
         }
 
         return $this->apiResponseSimple($data, $status, $screenOptional);
+    }
+
+    private function validateUpdateParams(BookUpdateRequest $request): bool
+    {
+        if (!DreamerNumberUtil::isInt($request->bookId)) {
+            return false;
+        }
+
+//        if (!DreamerNumberUtil::isInt($request->recordVersion)) {
+//            return false;
+//        }
+
+        // Có hiệu lực
+        return true;
     }
 }

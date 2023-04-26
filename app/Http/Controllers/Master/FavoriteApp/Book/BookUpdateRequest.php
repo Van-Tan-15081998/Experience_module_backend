@@ -48,8 +48,12 @@ class BookUpdateRequest extends FormRequest
     {
         $updateParam = new AdminBookUpdateParam();
 
+        $updateParam->setBookId($this->bookId);
+
         $updateParam->setTitle($this->title);
         $updateParam->setPublisherList(new DreamerTypeList($this->publisherList));
+
+        $updateParam->setRemovePublisherList(new DreamerTypeList($this->removePublisherList));
 
         return $updateParam;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Lib\Business\App\Master\FavoriteApp\Common\Book\Publisher\Entities;
 
+use App\Lib\Business\App\Master\FavoriteApp\Common\Book\Publisher\Models\AdminBookPublisherModel;
 use App\Lib\Business\App\Master\FavoriteApp\Common\Book\Publisher\Models\PublisherModel;
 use App\Lib\Common\Type\DreamerTypeList;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -94,6 +95,11 @@ class PublisherEntity extends Model
 //            . " WHERE favorite_app__book_publisher_allocations.is_deleted = 0 "
 //                . " AND favorite_app__book_publisher_allocations.book_id = " . $bookId;
 
+        /**
+         * Dựa vào table trung gian để lấy dữ liệu cần thiết - favorite_app__book_publisher_allocations
+         * Sử dụng model trung gian AdminBookPublisherModel
+        **/
+
         $query =
             "SELECT *"
             .   " FROM favorite_app__publishers"
@@ -113,7 +119,7 @@ class PublisherEntity extends Model
         $publisherList = new DreamerTypeList([]);
 
         foreach ($result as $record) {
-            $publisher = PublisherModel::createFromRecord($record);
+            $publisher = AdminBookPublisherModel::createFromRecord($record);
             $publisherList->add($publisher);
         }
 

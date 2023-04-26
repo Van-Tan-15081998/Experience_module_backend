@@ -76,7 +76,7 @@ class AdminCommonBusiness
 
             $functionRole = $this->adminRoleBusiness->getFunctionByScreenId($screenId);
             if($functionRole !== null) {
-                $functionRole->setIsBrowser(false);
+                $functionRole->setIsBrowse(false);
                 $functionRole->setIsRegistration(false);
                 $functionRole->setIsEdit(false);
                 $functionRole->setIsDelete(false);

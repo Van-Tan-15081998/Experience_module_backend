@@ -22,6 +22,12 @@ class MasterRoleGroup extends Seeder
                 'name'              => 'Book Role Group',
                 'is_invalid'        => false,
                 'sequence'          => 0
+            ],
+            [
+                'role_group_id'     => 2,
+                'name'              => 'Subject Role Group',
+                'is_invalid'        => false,
+                'sequence'          => 0
             ]
         ]);
     }

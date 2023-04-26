@@ -52,11 +52,11 @@ class BookListController extends BookBaseController
 
         $screenRole = new BookListScreenRoleModel();
 
-        $screenRole->setIsBrowse($role->isBrowser());
+        $screenRole->setIsBrowse($role->isBrowse());
 
         $detailRole = $relatedScreenRoleList->getByScreenId(AdminPageType::MASTER_FAVORITE_APP_BOOK_DETAIL()->getId());
 
-        if(is_null($detailRole) || !$detailRole->isBrowser()) {
+        if(is_null($detailRole) || !$detailRole->isBrowse()) {
             $screenRole->setIsRegistration(false);
             $screenRole->setIsEdit(false);
         } else {

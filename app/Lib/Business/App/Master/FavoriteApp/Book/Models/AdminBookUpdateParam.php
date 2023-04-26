@@ -11,6 +11,7 @@ class AdminBookUpdateParam
     private string $title;
 
     private DreamerTypeList $publisherList;
+    private DreamerTypeList $removePublisherList;
 
     /**
      * @return int|null
@@ -59,4 +60,21 @@ class AdminBookUpdateParam
     {
         $this->publisherList = $publisherList;
     }
+
+    /**
+     * @return DreamerTypeList
+     */
+    public function getRemovePublisherList(): DreamerTypeList
+    {
+        return $this->removePublisherList;
+    }
+
+    /**
+     * @param DreamerTypeList $removePublisherList
+     */
+    public function setRemovePublisherList(DreamerTypeList $removePublisherList): void
+    {
+        $this->removePublisherList = $removePublisherList;
+    }
 }
+

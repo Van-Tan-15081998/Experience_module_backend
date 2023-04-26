@@ -3,6 +3,10 @@
 use App\Http\Controllers\Master\FavoriteApp\Book\BookDetailController;
 use App\Http\Controllers\Master\FavoriteApp\Book\BookListController;
 use App\Http\Controllers\Master\FavoriteApp\Knowledge\KnowledgeController;
+use App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticle\KnowledgeArticleDetailController;
+use App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticle\KnowledgeArticleListController;
+use App\Http\Controllers\Master\KnowledgeArticleMaster\Subject\SubjectDetailController;
+use App\Http\Controllers\Master\KnowledgeArticleMaster\Subject\SubjectListController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -48,7 +52,7 @@ Route::group(
 
 //    Route::post('/master/favorite_app/book/detail/validate',);
     Route::post('/master/favorite_app/book/detail/register', [BookDetailController::class, 'register']);
-//    Route::post('/master/favorite_app/book/detail/update',);
+    Route::post('/master/favorite_app/book/detail/update', [BookDetailController::class, 'update']);
 //    Route::get('/master/favorite_app/book/detail/reset',);
 });
 
@@ -56,3 +60,21 @@ Route::group(
 
 //Route::get('/master/favorite_app/book/list', [BookListController::class, 'initDisplay']);
 
+Route::group(
+    ['middleware' => 'auth:api'], function () {
+        // Màn hình List Root Subject
+        Route::get('/master/knowledge_article_master/subject/list', [SubjectListController::class, 'initDisplay']);
+
+        // Màn hình chi Detail Subject (1) và danh sách các bài viết của Branch Subject
+        // + kèm theo danh sách các Subject là con của Subject (1)
+        Route::get('/master/knowledge_article_master/subject/detail', [SubjectDetailController::class, 'initDisplay']);
+
+        Route::post('/master/knowledge_article_master/subject/detail/register', [SubjectDetailController::class, 'register']);
+        Route::post('/master/knowledge_article_master/subject/detail/update', [SubjectDetailController::class, 'update']);
+
+
+        Route::post('/master/knowledge_article_master/knowledge_article/detail', [KnowledgeArticleDetailController::class, 'initDisplay']);
+        Route::post('/master/knowledge_article_master/knowledge_article/register', [KnowledgeArticleDetailController::class, 'register']);
+        Route::post('/master/knowledge_article_master/knowledge_article/update', [KnowledgeArticleDetailController::class, 'update']);
+    }
+);

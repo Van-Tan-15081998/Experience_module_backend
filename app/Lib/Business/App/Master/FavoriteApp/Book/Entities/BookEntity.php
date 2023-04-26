@@ -287,18 +287,20 @@ class BookEntity extends Model
         return $adminBook;
     }
 
-    public function insert(AdminBookUpdateParam $param): int {
+    public function insertBook(AdminBookUpdateParam $param): int
+    {
 
         $bookId = DB::table('favorite_app__books')->insertGetId(
             ['title' => $param->getTitle()]
         );
 
-        $this->insertPublisher($bookId, $param->getPublisherList());
+        $this->insertPublisherList($bookId, $param->getPublisherList());
 
         return $bookId;
     }
 
-    private function insertPublisher(int $bookId, DreamerTypeList $publisherList) {
+    private function insertPublisherList(int $bookId, DreamerTypeList $publisherList): void
+    {
         /**
          * $publisherList là tham số dạng mảng:
          * [
@@ -314,4 +316,95 @@ class BookEntity extends Model
             ]);
         }
     }
+
+    public function updateBook(AdminBookUpdateParam $param): int
+    {
+        /**
+         * Hàm update của Laravel (Query builder) sẽ trả về id của record vừa update thành công
+        **/
+        DB::table('favorite_app__books')
+            ->where('book_id', '=', $param->getBookId())
+            ->update(['title' => $param->getTitle()]);
+
+        $this->doUpdatePublisher($param->getBookId(), $param);
+
+        return $param->getBookId();
+    }
+
+    private function doUpdatePublisher(int $bookId, AdminBookUpdateParam $param): void
+    {
+        // Params for update or insert
+        $insertOrUpdateParams = $param->getPublisherList()->getList();
+
+        // Params for update
+        $updateParams = new DreamerTypeList([]);
+        // Params for insert
+        $insertParams = new DreamerTypeList([]);
+
+        foreach ($insertOrUpdateParams as $_param) {
+            if (!isset($_param['bookPublisherId'])) {
+                $insertParams->add($_param);
+            } else {
+                $updateParams->add($_param);
+            }
+        }
+
+        //---------------------------------------------------------
+        // INSERT
+        // Khi thêm mới, dữ liệu publisherList truyền về Backend là tham số dạng
+        /**
+         * $publisherList là tham số dạng mảng:
+         * [
+         *  { publisherId : 1 },
+         *  { publisherId : 2 },
+         *  { publisherId : 3 },
+         * ]
+         **/
+        //---------------------------------------------------------
+        $this->insertPublisherList($bookId, $insertParams);
+
+        //---------------------------------------------------------
+        // UPDATE
+        // Khi lấy dữ liệu cập nhật, dữ liệu publisherList truyền đến Frontend và truyền về Backend sẽ là tham số dạng
+        /**
+         * [
+         *  { bookPublisherId, publisherId : 1 },
+         *  { bookPublisherId, publisherId : 2 },
+         *  { bookPublisherId, publisherId : 3 },
+         * ]
+         * => bookPublisherId là key của table trung gian - favorite_app__book_publisher_allocations
+        **/
+        //---------------------------------------------------------
+        $this->updatePublisherList($bookId, $updateParams);
+
+        //---------------------------------------------------------
+        // DELETE LOGICAL
+        //---------------------------------------------------------
+        // Params for delete
+        $deleteParams = $param->getRemovePublisherList();
+
+        if(!$deleteParams->empty()) {
+            $this->deleteLogicalPublisherList($bookId, $deleteParams->getList());
+        }
+    }
+
+    private function updatePublisherList(int $bookId, DreamerTypeList $publisherList): void
+    {
+        foreach ($publisherList->getList() as $param) {
+            DB::table('favorite_app__book_publisher_allocations')
+                ->where('book_publisher_allocation_id', '=', $param['bookPublisherId'])
+                ->update(['publisher_id' => $param['publisherId']]);
+        }
+    }
+
+    private function deleteLogicalPublisherList(int $bookId, array $deleteParams): void
+    {
+        foreach ($deleteParams as $param) {
+            DB::table('favorite_app__book_publisher_allocations')
+                ->where('book_publisher_allocation_id', '=', $param['bookPublisherId'])
+                ->update(['is_deleted' => true]);
+        }
+    }
+
+
 }

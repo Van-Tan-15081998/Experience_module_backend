@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigIncrements('role_function_id');
             $table->bigInteger('role_id');
             $table->bigInteger('function_id');
-            $table->boolean('is_browser')->default(false);
+            $table->boolean('is_browse')->default(false);
             $table->boolean('is_registration')->default(false);
             $table->boolean('is_edit')->default(false);
             $table->boolean('is_delete')->default(false);

@@ -6,22 +6,22 @@ use App\Http\Controllers\Base\FavoriteApp\Book\Models\BookScreenRoleModel;
 
 class BookListScreenRoleModel extends BookScreenRoleModel
 {
-    private bool $isBrowserForDetail;
+    private bool $isBrowseForDetail;
 
     /**
      * @return bool
      */
-    public function isBrowserForDetail(): bool
+    public function isBrowseForDetail(): bool
     {
-        return $this->isBrowserForDetail;
+        return $this->isBrowseForDetail;
     }
 
     /**
-     * @param bool $isBrowserForDetail
+     * @param bool $isBrowseForDetail
      */
-    public function setIsBrowserForDetail(bool $isBrowserForDetail): void
+    public function setIsBrowseForDetail(bool $isBrowseForDetail): void
     {
-        $this->isBrowserForDetail = $isBrowserForDetail;
+        $this->isBrowseForDetail = $isBrowseForDetail;
     }
 
     public function toArray(): array

@@ -47,4 +47,12 @@ class ResponseStatusHelper
             'Đã đăng ký'
         );
     }
+
+    public static function createUpdateSuccessful(): ResponseStatus
+    {
+        return ResponseStatus::createSuccessfulStatus(
+            MessageType::INFO(),
+            'Đã cập nhật'
+        );
+    }
 }

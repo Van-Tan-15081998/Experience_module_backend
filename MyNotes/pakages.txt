@@ -35,3 +35,6 @@ Chạy project với Passport (Sau khi đã cài đặt)
 
     Tham khảo: https://vinasupport.com/huong-dan-cai-dat-va-su-dung-laravel-passport/
             https://vinasupport.com/xac-thuc-authentication-voi-laravel-passport/
+
+----------
+Debug Postman => form data XDEBUG_SESSION_START : PHPSTORM

@@ -8,7 +8,7 @@ class RoleFunctionModel
     private int $screenId;
     private string $functionName;
     private string $screenName;
-    private bool $isBrowser;
+    private bool $isBrowse;
     private bool $isRegistration;
     private bool $isEdit;
     private bool $isDelete;
@@ -82,17 +82,17 @@ class RoleFunctionModel
     /**
      * @return bool
      */
-    public function isBrowser(): bool
+    public function isBrowse(): bool
     {
-        return $this->isBrowser;
+        return $this->isBrowse;
     }
 
     /**
      * @param bool $isBrowse
      */
-    public function setIsBrowser(bool $isBrowser): void
+    public function setIsBrowse(bool $isBrowse): void
     {
-        $this->isBrowser = $isBrowser;
+        $this->isBrowse = $isBrowse;
     }
 
     /**
@@ -210,7 +210,7 @@ class RoleFunctionModel
         $model->screenId        = $record->screen_id;
         $model->functionName    = $record->name;
         $model->screenName      = $record->screen_name;
-        $model->isBrowser       = $record->is_browser;
+        $model->isBrowse       = $record->is_browse;
         $model->isRegistration  = $record->is_registration;
         $model->isEdit          = $record->is_edit;
         $model->isDelete        = $record->is_delete;

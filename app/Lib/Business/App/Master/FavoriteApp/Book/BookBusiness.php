@@ -97,13 +97,15 @@ class BookBusiness extends ExperienceBaseBusiness
         return $this->bookCommonBusiness->getPublisherList();
     }
 
+    /**
+     * TODO: Add - Start [
+    **/
     public function add(BookUpdateRequest $request): int
     {
         // Get update params
         $updateParam = $request->getUpdateParam();
 
         // Validate input params
-        // Validation of update information (other than validation rule check)
         $errors = $this->validateSaveParams($updateParam, $request);
         if (isset($errors)) {
             throw new DreamerValidationBusinessException($errors);
@@ -116,6 +118,7 @@ class BookBusiness extends ExperienceBaseBusiness
     {
         $result = null;
 
+        // Khối try catch để catch các lỗi trong quá trình thao tác với Database
         try {
             $result = $this->_insertBook($param);
 
@@ -131,6 +134,7 @@ class BookBusiness extends ExperienceBaseBusiness
 
         $isValid = $this->validateUpdateParams($param);
 
+        // Nếu xảy ra lỗi [[['Dữ liệu không thống nhất' - DreamerCommonErrorCode::E00000000004()]]]
         if (!$isValid) {
             throw new DreamerBusinessException(
                 DreamerCommonErrorCode::E00000000004()->getCode(),
@@ -138,10 +142,69 @@ class BookBusiness extends ExperienceBaseBusiness
             );
         }
 
-        $bookId = $this->bookEntity->insert($param);
+        $bookId = $this->bookEntity->insertBook($param);
 
         return $bookId;
     }
+    /**
+     * TODO: Add - End ]
+     **/
+
+    /**
+     * TODO: Update - Start [
+     **/
+
+    public function update(BookUpdateRequest $request): int
+    {
+        // Get update params
+        $updateParam = $request->getUpdateParam();
+
+        // Validate input params
+        $errors = $this->validateSaveParams($updateParam, $request);
+
+        if (isset($errors)) {
+            throw new DreamerValidationBusinessException($errors);
+        }
+
+        return $this->_update($updateParam);
+    }
+
+    private function _update(AdminBookUpdateParam $param): int
+    {
+        $result = null;
+
+        // Khối try catch để catch các lỗi trong quá trình thao tác với Database
+        try {
+            $result = $this->_updateBook($param);
+
+        } catch (\Exception $e) {
+
+            DreamerExceptionConverter::convertException($e);
+        }
+
+        return $result;
+    }
+
+    private function _updateBook(AdminBookUpdateParam $param): int {
+
+        $isValid = $this->validateUpdateParams($param);
+
+        // Nếu xảy ra lỗi [[['Dữ liệu không thống nhất' - DreamerCommonErrorCode::E00000000004()]]]
+        if (!$isValid) {
+            throw new DreamerBusinessException(
+                DreamerCommonErrorCode::E00000000004()->getCode(),
+                DreamerCommonErrorCode::E00000000004()->getDescription()
+            );
+        }
+
+        $bookId = $this->bookEntity->updateBook($param);
+
+        return $bookId;
+    }
+
+    /**
+     * TODO: Update - End ]
+     **/
 
     private function validateUpdateParams(AdminBookUpdateParam $param): bool
     {
@@ -164,6 +227,7 @@ class BookBusiness extends ExperienceBaseBusiness
 
     private function validateSaveParams(AdminBookUpdateParam $updateParam, BookUpdateRequest $request): ?DreamerValidationErrors
     {
+        //
         $errors = new DreamerValidationErrors();
 
         if ($errors->empty()) {

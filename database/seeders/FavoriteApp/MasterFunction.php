@@ -32,7 +32,24 @@ class MasterFunction extends Seeder
                 'screen_name'           => 'Book Detail',
                 'screen_id'             => '80000002',
                 'sequence'              => 1
+            ],
+            [
+                'function_id'           => 3,
+                'parent_function_id'    => 0,
+                'name'                  => 'Subject List - Function',
+                'screen_name'           => 'Subject List',
+                'screen_id'             => '80000003',
+                'sequence'              => 1
+            ],
+            [
+                'function_id'           => 4,
+                'parent_function_id'    => 3,
+                'name'                  => 'Subject Detail - Function',
+                'screen_name'           => 'Subject Detail',
+                'screen_id'             => '80000004',
+                'sequence'              => 1
             ]
-            ]);
+
+        ]);
     }
 }
