@@ -287,8 +287,6 @@ class AdminSubjectListModel extends DreamerTypeObject
         $model->title                   = $record->title;
         $model->level                   = $record->level;
         $model->sequence                = $record->sequence;
-        $model->parentSubjectCode       = $record->parent_subject_code;
-        $model->rootSubjectCode         = $record->root_subject_code;
 
         $model->createdAccountId        = $record->created_account_id;
         $model->createdAccountLoginId   = $record->created_account_login_id;

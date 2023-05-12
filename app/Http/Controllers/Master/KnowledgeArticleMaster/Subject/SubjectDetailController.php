@@ -303,7 +303,15 @@ class SubjectDetailController extends SubjectBaseController
             if(DetailsAction::EDIT()->isSame($mode) || DetailsAction::NEW()->isSame($mode))  {
 
                 try {
-                    $selectionItems = $this->subjectBusiness->getEditSelectionItems($adminSubject);
+                    $selectionItems = new ResponseArrayModel();
+
+                    if(DetailsAction::EDIT()->isSame($mode)) {
+                        $selectionItems = $this->subjectBusiness->getEditSelectionItems($adminSubject);
+                    } else if(DetailsAction::NEW()->isSame($mode)) {
+                        // Với mode = new, sẽ lấy toàn bộ chủ đề cũng như bài viết
+                        $selectionItems = $this->subjectBusiness->getNewSelectionItems($adminSubject);
+                    }
+
                     $selectionItems = $selectionItems->toArray();
 
                     // Nếu có bất cứ một item nào trong list là rỗng thì báo lỗi

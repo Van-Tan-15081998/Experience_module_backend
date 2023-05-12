@@ -2,6 +2,8 @@
 
 namespace App\Lib\Business\App\Master\KnowledgeArticleMaster\Subject\Models;
 
+use App\Lib\Common\Type\DreamerTypeList;
+
 class AdminSubjectUpdateParam
 {
     private ?int        $subjectId = null;
@@ -9,8 +11,11 @@ class AdminSubjectUpdateParam
     private string      $title;
     private int         $level;
     private int         $sequence;
-    private int         $parentSubjectCode;
-    private int         $rootSubjectCode;
+
+    private DreamerTypeList $parentSubjectList;
+
+    private DreamerTypeList $branchSubjectList;
+    private DreamerTypeList $knowledgeArticleList;
 
     /**
      * @return int|null
@@ -77,36 +82,50 @@ class AdminSubjectUpdateParam
     }
 
     /**
-     * @return int
+     * @return DreamerTypeList
      */
-    public function getParentSubjectCode(): int
+    public function getParentSubjectList(): DreamerTypeList
     {
-        return $this->parentSubjectCode;
+        return $this->parentSubjectList;
     }
 
     /**
-     * @param int $parentSubjectCode
+     * @param DreamerTypeList $parentSubjectList
      */
-    public function setParentSubjectCode(int $parentSubjectCode): void
+    public function setParentSubjectList(DreamerTypeList $parentSubjectList): void
     {
-        $this->parentSubjectCode = $parentSubjectCode;
+        $this->parentSubjectList = $parentSubjectList;
     }
 
     /**
-     * @return int
+     * @return DreamerTypeList
      */
-    public function getRootSubjectCode(): int
+    public function getBranchSubjectList(): DreamerTypeList
     {
-        return $this->rootSubjectCode;
+        return $this->branchSubjectList;
     }
 
     /**
-     * @param int $rootSubjectCode
+     * @param DreamerTypeList $branchSubjectList
      */
-    public function setRootSubjectCode(int $rootSubjectCode): void
+    public function setBranchSubjectList(DreamerTypeList $branchSubjectList): void
     {
-        $this->rootSubjectCode = $rootSubjectCode;
+        $this->branchSubjectList = $branchSubjectList;
     }
 
+    /**
+     * @return DreamerTypeList
+     */
+    public function getKnowledgeArticleList(): DreamerTypeList
+    {
+        return $this->knowledgeArticleList;
+    }
 
+    /**
+     * @param DreamerTypeList $knowledgeArticleList
+     */
+    public function setKnowledgeArticleList(DreamerTypeList $knowledgeArticleList): void
+    {
+        $this->knowledgeArticleList = $knowledgeArticleList;
+    }
 }

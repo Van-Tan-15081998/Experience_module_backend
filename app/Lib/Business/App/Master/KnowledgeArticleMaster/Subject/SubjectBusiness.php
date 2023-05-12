@@ -17,6 +17,7 @@ use App\Lib\Business\Common\Models\DreamerValidationErrors;
 use App\Lib\Business\Constants\DreamerCommonErrorCode;
 use App\Lib\Common\Core\DataSource\Models\PageInfo;
 use App\Lib\Common\Type\DreamerTypeList;
+use App\Lib\WebCommon\Helpers\ResponseArrayModel;
 use Illuminate\Support\Facades\App;
 
 class SubjectBusiness extends ExperienceBaseBusiness
@@ -52,16 +53,31 @@ class SubjectBusiness extends ExperienceBaseBusiness
             $detail = $this->subjectEntity->getEditSubjectById($subjectId);
 
         } else {
+            // Mode New
             $detail = new AdminSubjectModel();
             $detail->init();
+
+            // Set Branch Subject List
+//            $branchSubjectList = $this->getBranchSubjectList();
+//            $detail->setBranchSubjectList($branchSubjectList);
+
+            // Set Knowledge Article List
+//            $knowledgeArticleList = $this->getKnowledgeArticleList();
+//            $detail->setKnowledgeArticleList($knowledgeArticleList);
+
+            return $detail;
         }
 
+        // Set Parent Subject List
+        $parentSubjectList = $this->getParentSubjectListBySubjectId($detail->getSubjectId());
+        $detail->setParentSubjectList($parentSubjectList);
+
         // Set Branch Subject List
-        $branchSubjectList = $this->getBranchSubjectList($detail->getSubjectId());
+        $branchSubjectList = $this->getBranchSubjectListBySubjectId($detail->getSubjectId());
         $detail->setBranchSubjectList($branchSubjectList);
 
         // Set Knowledge Article List
-        $knowledgeArticleList = $this->getKnowledgeArticleList($detail->getSubjectId());
+        $knowledgeArticleList = $this->getKnowledgeArticleListBySubjectId($detail->getSubjectId());
         $detail->setKnowledgeArticleList($knowledgeArticleList);
 
         return $detail;
@@ -194,13 +210,55 @@ class SubjectBusiness extends ExperienceBaseBusiness
         return $errors;
     }
 
-    public function getBranchSubjectList(int $subjectId): DreamerTypeList
+    public function getEditSelectionItems(?AdminSubjectModel $subject): ResponseArrayModel
+    {
+        $selectionItems = new ResponseArrayModel();
+        $isExistEmptyList = false;
+
+        $branchSubjectList = $this->getBranchSubjectListBySubjectId($subject->getSubjectId());
+
+        $knowledgeArticleList = $this->getKnowledgeArticleListBySubjectId($subject->getSubjectId());
+
+        $selectionItems->addResponseItem('branchSubjectList', $branchSubjectList);
+        $selectionItems->addResponseItem('knowledgeArticleList', $knowledgeArticleList);
+
+        $isExistEmptyList |= $branchSubjectList->empty() && $knowledgeArticleList->empty();
+
+        $result = new ResponseArrayModel();
+        $result->addResponseItem('searchItems', $selectionItems);
+        $result->addResponseItem('isExistsEmptyList', $isExistEmptyList);
+
+        return $result;
+    }
+
+    public function getNewSelectionItems(): ResponseArrayModel
+    {
+        $selectionItems = new ResponseArrayModel();
+        $isExistEmptyList = false;
+
+        $branchSubjectList = $this->getBranchSubjectList();
+
+        $knowledgeArticleList = $this->getKnowledgeArticleList();
+
+        $selectionItems->addResponseItem('branchSubjectList', $branchSubjectList);
+        $selectionItems->addResponseItem('knowledgeArticleList', $knowledgeArticleList);
+
+        $isExistEmptyList |= $branchSubjectList->empty() && $knowledgeArticleList->empty();
+
+        $result = new ResponseArrayModel();
+        $result->addResponseItem('searchItems', $selectionItems);
+        $result->addResponseItem('isExistsEmptyList', $isExistEmptyList);
+
+        return $result;
+    }
+
+    public function getBranchSubjectList(): DreamerTypeList
     {
         $result = null;
 
         try {
 
-            $result = $this->subjectEntity->getBranchSubjectList($subjectId);
+            $result = $this->subjectEntity->getBranchSubjectList();
 
         } catch (\Exception $e) {
             DreamerExceptionConverter::convertException($e);
@@ -209,13 +267,13 @@ class SubjectBusiness extends ExperienceBaseBusiness
         return $result;
     }
 
-    public function getKnowledgeArticleList(int $subjectId): DreamerTypeList
+    public function getKnowledgeArticleList(): DreamerTypeList
     {
         $result = null;
 
         try {
 
-            $result = $this->subjectEntity->getKnowledgeArticleList($subjectId);
+            $result = $this->subjectEntity->getKnowledgeArticleList();
 
         } catch (\Exception $e) {
             DreamerExceptionConverter::convertException($e);
@@ -223,4 +281,51 @@ class SubjectBusiness extends ExperienceBaseBusiness
 
         return $result;
     }
+
+    public function getParentSubjectListBySubjectId(int $subjectId): DreamerTypeList
+    {
+        $result = null;
+
+        try {
+
+            $result = $this->subjectEntity->getParentSubjectListBySubjectId($subjectId);
+
+        } catch (\Exception $e) {
+            DreamerExceptionConverter::convertException($e);
+        }
+
+        return $result;
+    }
+
+    public function getBranchSubjectListBySubjectId(int $subjectId): DreamerTypeList
+    {
+        $result = null;
+
+        try {
+
+            $result = $this->subjectEntity->getBranchSubjectListBySubjectId($subjectId);
+
+        } catch (\Exception $e) {
+            DreamerExceptionConverter::convertException($e);
+        }
+
+        return $result;
+    }
+
+    public function getKnowledgeArticleListBySubjectId(int $subjectId): DreamerTypeList
+    {
+        $result = null;
+
+        try {
+
+            $result = $this->subjectEntity->getKnowledgeArticleListBySubjectId($subjectId);
+
+        } catch (\Exception $e) {
+            DreamerExceptionConverter::convertException($e);
+        }
+
+        return $result;
+    }
+
+
 }

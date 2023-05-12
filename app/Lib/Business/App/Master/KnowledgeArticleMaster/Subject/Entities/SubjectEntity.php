@@ -29,8 +29,6 @@ class SubjectEntity extends Model
         'title',
         'level',
         'sequence',
-        'parent_subject_code',
-        'root_subject_code',
 
         'created_account_id',
         'created_account_login_id',
@@ -72,9 +70,7 @@ class SubjectEntity extends Model
             "SELECT *"
             . " FROM kam__subjects"
             . " WHERE kam__subjects.is_deleted = 0"
-            .       " AND kam__subjects.level = 1"
-            .       " AND kam__subjects.parent_subject_code = 0"
-        ;
+            .       " AND kam__subjects.level = 1";
 
         if (!is_null($condition)) {
             $query .= '';
@@ -176,7 +172,7 @@ class SubjectEntity extends Model
         $detail = null;
 
         try {
-            $detail = $this->selectEditBoothById($subjectId);
+            $detail = $this->selectEditSubjectById($subjectId);
 
 
         } catch (\Exception $e) {
@@ -210,7 +206,7 @@ class SubjectEntity extends Model
         return $adminSubject;
     }
 
-    public function selectEditBoothById(int $subjectId): ?AdminSubjectModel
+    public function selectEditSubjectById(int $subjectId): ?AdminSubjectModel
     {
         $query =
             "SELECT *"
@@ -231,18 +227,60 @@ class SubjectEntity extends Model
 
     public function insertSubject(AdminSubjectUpdateParam $param): int
     {
-
         $subjectId = DB::table('kam__subjects')->insertGetId(
             [
                 'title'     => $param->getTitle(),
                 'level'     => $param->getLevel(),
                 'sequence'  => $param->getSequence(),
-                'parent_subject_code'   => $param->getParentSubjectCode(),
-                'root_subject_code'     => $param->getRootSubjectCode()
             ]
         );
 
+        // Nếu subject có level = 1 => subject gốc => bỏ qua insert danh sách subject cha nếu có
+        if($param->getLevel() !== 1) {
+            $this->insertParentSubjectList($subjectId, $param->getParentSubjectList());
+        }
+
+        $this->insertBranchSubjectList($subjectId, $param->getBranchSubjectList());
+
         return $subjectId;
+    }
+
+    private function insertParentSubjectList(int $subjectId, DreamerTypeList $parentSubjectList): void
+    {
+        /**
+         * $parentSubjectList là tham số dạng mảng:
+         * [
+         *  { subjectId : 1 },
+         *  { subjectId : 2 },
+         *  { subjectId : 3 },
+         * ]
+         **/
+        if(!$parentSubjectList->empty()) {
+            foreach ($parentSubjectList->getList() as $parentSubject) {
+                DB::table('kam__subject_branch_subject_allocations')->insert([
+                    ['subject_id' => $parentSubject['subjectId'], 'branch_subject_id' => $subjectId],
+                ]);
+            }
+        }
+    }
+
+    private function insertBranchSubjectList(int $subjectId, DreamerTypeList $branchSubjectList): void
+    {
+        /**
+         * $branchSubjectList là tham số dạng mảng:
+         * [
+         *  { subjectId : 1 },
+         *  { subjectId : 2 },
+         *  { subjectId : 3 },
+         * ]
+         **/
+        if(!$branchSubjectList->empty()) {
+            foreach ($branchSubjectList->getList() as $branchSubject) {
+                DB::table('kam__subject_branch_subject_allocations')->insert([
+                    ['subject_id' => $subjectId, 'branch_subject_id' => $branchSubject['subjectId']],
+                ]);
+            }
+        }
     }
 
     public function updateSubject(AdminSubjectUpdateParam $param): int
@@ -256,30 +294,72 @@ class SubjectEntity extends Model
                 'title'     => $param->getTitle(),
                 'level'     => $param->getLevel(),
                 'sequence'  => $param->getSequence(),
-                'parent_subject_code'   => $param->getParentSubjectCode(),
-                'root_subject_code'     => $param->getRootSubjectCode()
             ]);
 
         return $param->getSubjectId();
     }
 
-    public function getBranchSubjectList(int $subjectId): DreamerTypeList
+    public function getParentSubjectListBySubjectId(int $subjectId): DreamerTypeList
     {
-        return $this->selectBranchSubjectList($subjectId);
+        return $this->selectParentSubjectListBySubjectId($subjectId);
     }
 
-    public function getKnowledgeArticleList(int $subjectId): DreamerTypeList
+    public function getBranchSubjectListBySubjectId(int $subjectId): DreamerTypeList
     {
-        return $this->selectKnowledgeArticleList($subjectId);
+        return $this->selectBranchSubjectListBySubjectId($subjectId);
     }
 
-    public function selectBranchSubjectList(int $subjectId): DreamerTypeList
+    public function getKnowledgeArticleListBySubjectId(int $subjectId): DreamerTypeList
+    {
+        return $this->selectKnowledgeArticleListBySubjectId($subjectId);
+    }
+
+    public function selectParentSubjectListBySubjectId(int $subjectId): DreamerTypeList
     {
         $query =
             "SELECT *"
-            . " FROM kam__subjects"
-            . " WHERE kam__subjects.is_deleted = 0 "
-            .   " AND kam__subjects.parent_subject_code = " . $subjectId;
+            . " FROM kam__subject_branch_subject_allocations"
+            . " JOIN kam__subjects"
+            .   " ON kam__subject_branch_subject_allocations.subject_id = kam__subjects.subject_id"
+            .   " AND kam__subjects.is_deleted = 0"
+            . " WHERE kam__subject_branch_subject_allocations.branch_subject_id = " . $subjectId
+            .   " AND kam__subject_branch_subject_allocations.is_deleted = 0";
+
+        $result = DB::select($query);
+
+        if (is_null($result) || empty($result)) {
+            return new DreamerTypeList([]);
+        }
+
+        $parentSubjectList = new DreamerTypeList([]);
+
+        foreach ($result as $record) {
+            $parentSubject = AdminSubjectModel::createFromRecord($record);
+            $parentSubjectList->add($parentSubject);
+        }
+
+        return $parentSubjectList;
+    }
+
+    public function selectBranchSubjectListBySubjectId(int $subjectId): DreamerTypeList
+    {
+//        $query =
+//            "SELECT *"
+//            . " FROM kam__subjects"
+//            . " JOIN kam__subject_branch_subject_allocations"
+//            . " ON kam__subject_branch_subject_allocations.is_deleted = 0 "
+//            .   " AND kam__subject_branch_subject_allocations.subject_id = " . $subjectId
+//            .   " AND kam__subject_branch_subject_allocations.branch_subject_id = kam__subjects.subject_id"
+//            . " WHERE kam__subjects.is_deleted = 0";
+
+        $query =
+            "SELECT *"
+            . " FROM kam__subject_branch_subject_allocations"
+            . " JOIN kam__subjects"
+            .   " ON kam__subject_branch_subject_allocations.branch_subject_id = kam__subjects.subject_id"
+            .   " AND kam__subjects.is_deleted = 0"
+            . " WHERE kam__subject_branch_subject_allocations.subject_id = " . $subjectId
+            .   " AND kam__subject_branch_subject_allocations.is_deleted = 0";
 
         $result = DB::select($query);
 
@@ -297,7 +377,7 @@ class SubjectEntity extends Model
         return $branchSubjectList;
     }
 
-    public function selectKnowledgeArticleList(int $subjectId): DreamerTypeList
+    public function selectKnowledgeArticleListBySubjectId(int $subjectId): DreamerTypeList
     {
         $query =
             "SELECT *"
@@ -308,6 +388,62 @@ class SubjectEntity extends Model
             . " AND kam__subject_knowledge_article_allocations.subject_id = " . $subjectId
             . " AND kam__subject_knowledge_article_allocations.is_deleted = 0"
 
+            . " WHERE kam__knowledge_articles.is_deleted = 0 ";
+
+        $result = DB::select($query);
+
+        if (is_null($result) || empty($result)) {
+            return new DreamerTypeList([]);
+        }
+
+        $knowledgeArticleList = new DreamerTypeList([]);
+
+        foreach ($result as $record) {
+            $knowledgeArticle = AdminKnowledgeArticleModel::createFromRecord($record);
+            $knowledgeArticleList->add($knowledgeArticle);
+        }
+
+        return $knowledgeArticleList;
+    }
+
+    public function getBranchSubjectList(): DreamerTypeList
+    {
+        return $this->selectBranchSubjectList();
+    }
+
+    public function getKnowledgeArticleList(): DreamerTypeList
+    {
+        return $this->selectKnowledgeArticleList();
+    }
+
+    public function selectBranchSubjectList(): DreamerTypeList
+    {
+        $query =
+            "SELECT *"
+            . " FROM kam__subjects"
+            . " WHERE kam__subjects.is_deleted = 0 ";
+
+        $result = DB::select($query);
+
+        if (is_null($result) || empty($result)) {
+            return new DreamerTypeList([]);
+        }
+
+        $branchSubjectList = new DreamerTypeList([]);
+
+        foreach ($result as $record) {
+            $branchSubject = AdminSubjectModel::createFromRecord($record);
+            $branchSubjectList->add($branchSubject);
+        }
+
+        return $branchSubjectList;
+    }
+
+    public function selectKnowledgeArticleList(): DreamerTypeList
+    {
+        $query =
+            "SELECT *"
+            . " FROM kam__knowledge_articles"
             . " WHERE kam__knowledge_articles.is_deleted = 0 ";
 
         $result = DB::select($query);

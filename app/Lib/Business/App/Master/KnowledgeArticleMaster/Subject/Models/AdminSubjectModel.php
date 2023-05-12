@@ -11,8 +11,8 @@ class AdminSubjectModel extends DreamerTypeObject
     private string          $title;
     private int             $level;
     private int             $sequence;
-    private int             $parentSubjectCode;
-    private int             $rootSubjectCode;
+
+    private DreamerTypeList $parentSubjectList;
 
     private DreamerTypeList $branchSubjectList;
 
@@ -91,38 +91,6 @@ class AdminSubjectModel extends DreamerTypeObject
     public function setSequence(int $sequence): void
     {
         $this->sequence = $sequence;
-    }
-
-    /**
-     * @return int
-     */
-    public function getParentSubjectCode(): int
-    {
-        return $this->parentSubjectCode;
-    }
-
-    /**
-     * @param int $parentSubjectCode
-     */
-    public function setParentSubjectCode(int $parentSubjectCode): void
-    {
-        $this->parentSubjectCode = $parentSubjectCode;
-    }
-
-    /**
-     * @return int
-     */
-    public function getRootSubjectCode(): int
-    {
-        return $this->rootSubjectCode;
-    }
-
-    /**
-     * @param int $rootSubjectCode
-     */
-    public function setRootSubjectCode(int $rootSubjectCode): void
-    {
-        $this->rootSubjectCode = $rootSubjectCode;
     }
 
     /**
@@ -288,6 +256,22 @@ class AdminSubjectModel extends DreamerTypeObject
     /**
      * @return DreamerTypeList
      */
+    public function getParentSubjectList(): DreamerTypeList
+    {
+        return $this->parentSubjectList;
+    }
+
+    /**
+     * @param DreamerTypeList $parentSubjectList
+     */
+    public function setParentSubjectList(DreamerTypeList $parentSubjectList): void
+    {
+        $this->parentSubjectList = $parentSubjectList;
+    }
+
+    /**
+     * @return DreamerTypeList
+     */
     public function getBranchSubjectList(): DreamerTypeList
     {
         return $this->branchSubjectList;
@@ -317,6 +301,27 @@ class AdminSubjectModel extends DreamerTypeObject
         $this->knowledgeArticleList = $knowledgeArticleList;
     }
 
+    public function init(): void
+    {
+        $this->title                   = 'Title mẫu nha';
+        $this->level                    = 2;
+        $this->sequence                 = 1;
+
+        $this->branchSubjectList        = new DreamerTypeList([]);
+        $this->knowledgeArticleList     = new DreamerTypeList([]);
+
+        $this->createdAccountId        = null;
+        $this->createdAccountLoginId   = null;
+        $this->createdAccountName      = '';
+        $this->createdDatetime         = '';
+        $this->updatedAccountId        = null;
+        $this->updatedAccountLoginId   = null;
+        $this->updatedAccountName      = '';
+        $this->updatedDatetime         = '';
+        $this->recordVersion           = null;
+        $this->isDeleted               = null;
+    }
+
     public static function createFromRecord($record): AdminSubjectModel {
         $model = new AdminSubjectModel();
 
@@ -324,8 +329,6 @@ class AdminSubjectModel extends DreamerTypeObject
         $model->title                   = $record->title;
         $model->level                   = $record->level;
         $model->sequence                = $record->sequence;
-        $model->parentSubjectCode       = $record->parent_subject_code;
-        $model->rootSubjectCode         = $record->root_subject_code;
 
         $model->createdAccountId        = $record->created_account_id;
         $model->createdAccountLoginId   = $record->created_account_login_id;
@@ -348,8 +351,6 @@ class AdminSubjectModel extends DreamerTypeObject
         $model->title                   = $record->title;
         $model->level                   = $record->level;
         $model->sequence                = $record->sequence;
-        $model->parentSubjectCode       = $record->parent_subject_code;
-        $model->rootSubjectCode         = $record->root_subject_code;
 
         $model->createdAccountId        = $record->created_account_id;
         $model->createdAccountLoginId   = $record->created_account_login_id;

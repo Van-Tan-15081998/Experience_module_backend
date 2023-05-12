@@ -28,7 +28,7 @@ class SubjectListController extends SubjectBaseController
     }
 
     /**
-     * // Hàm initDisplay() chỉ get danh sách root subject (level = 1, parent_subject_code = 0)
+     * // Hàm initDisplay() chỉ get danh sách root subject (level = 1)
     **/
     public function initDisplay(SubjectListRequest $request): Response
     {

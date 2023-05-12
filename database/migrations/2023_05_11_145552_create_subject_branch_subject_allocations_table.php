@@ -13,14 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        /**
-         * 'kam'    <=>     'knowledge_article_master'
-         **/
-        Schema::create('kam__subjects', function (Blueprint $table) {
-            $table->bigIncrements('subject_id');
-            $table->string('title', 240)->default('');
-            $table->tinyInteger('level')->default(1);
-            $table->tinyInteger('sequence')->default(1);
+        Schema::create('kam__subject_branch_subject_allocations', function (Blueprint $table) {
+            $table->bigIncrements('subject_branch_subject_allocation_id');
+            $table->bigInteger('subject_id');
+            $table->bigInteger('branch_subject_id');
 
             $table->bigInteger('created_account_id')->default(0);
             $table->bigInteger('created_account_login_id')->default(0);
@@ -42,6 +38,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kam__subjects');
+        Schema::dropIfExists('kam__subject_branch_subject_allocations');
     }
 };

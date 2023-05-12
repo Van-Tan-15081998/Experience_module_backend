@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master\KnowledgeArticleMaster\Subject;
 
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\Subject\Models\AdminSubjectUpdateParam;
+use App\Lib\Common\Type\DreamerTypeList;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SubjectUpdateRequest extends FormRequest
@@ -16,6 +17,12 @@ class SubjectUpdateRequest extends FormRequest
     {
         return [
             'title' => 'required|max:255',
+
+            'parentSubjectList' => 'array',
+            'parentSubjectList.*.subjectId' => 'numeric|min:0|not_in:0',
+
+            'branchSubjectList' => 'array',
+            'branchSubjectList.*.subjectId' => 'required|numeric|min:0|not_in:0',
         ];
     }
 
@@ -24,6 +31,10 @@ class SubjectUpdateRequest extends FormRequest
         return [
             'title.required'            => 'Tiêu đề sách là bắt buộc',
             'title.max'                 => 'Tiêu đề sách không được dài quá 255 ký tự',
+
+            'parentSubjectList.*.subjectId.not_in'      => 'Vui lòng chọn chủ đề cha',
+
+            'branchSubjectList.*.subjectId.not_in'      => 'Vui lòng chọn chủ đề con',
         ];
     }
 
@@ -35,8 +46,11 @@ class SubjectUpdateRequest extends FormRequest
         $updateParam->setTitle($this->title);
         $updateParam->setLevel($this->level);
         $updateParam->setSequence($this->sequence);
-        $updateParam->setParentSubjectCode($this->parentSubjectCode);
-        $updateParam->setRootSubjectCode($this->rootSubjectCode);
+
+        $updateParam->setparentSubjectList(new DreamerTypeList($this->parentSubjectList));
+
+        $updateParam->setBranchSubjectList(new DreamerTypeList($this->branchSubjectList));
+        $updateParam->setKnowledgeArticleList(new DreamerTypeList($this->knowledgeArticleList));
 
         return $updateParam;
     }

@@ -15,6 +15,7 @@ use Database\Seeders\FavoriteApp\MasterRoleGroupRoleAllocation;
 use Database\Seeders\FavoriteApp\MasterStaffAccountRoleGroupAllocation;
 use Database\Seeders\FavoriteApp\PublisherSeeder;
 use Database\Seeders\KnowledgeArticle\KnowledgeArticleSeeder;
+use Database\Seeders\KnowledgeArticle\SubjectBranchSubjectAllocationSeeder;
 use Database\Seeders\KnowledgeArticle\SubjectKnowledgeArticleAllocationSeeder;
 use Database\Seeders\KnowledgeArticle\SubjectSeeder;
 use Database\Seeders\LaravelResearch\DepartmentSeeder;
@@ -46,6 +47,7 @@ class DatabaseSeeder extends Seeder
             SubjectSeeder::class,
             SubjectKnowledgeArticleAllocationSeeder::class,
             KnowledgeArticleSeeder::class,
+            SubjectBranchSubjectAllocationSeeder::class,
 
             StaffAccountSeeder::class,
             MasterFunction::class,
