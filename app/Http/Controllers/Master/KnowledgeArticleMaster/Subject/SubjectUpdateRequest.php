@@ -22,15 +22,15 @@ class SubjectUpdateRequest extends FormRequest
             'parentSubjectList.*.subjectId' => 'numeric|min:0|not_in:0',
 
             'branchSubjectList' => 'array',
-            'branchSubjectList.*.subjectId' => 'required|numeric|min:0|not_in:0',
+            'branchSubjectList.*.subjectId' => 'numeric|min:0|not_in:0',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'title.required'            => 'Tiêu đề sách là bắt buộc',
-            'title.max'                 => 'Tiêu đề sách không được dài quá 255 ký tự',
+            'title.required'            => 'Tiêu đề chủ đề là bắt buộc',
+            'title.max'                 => 'Tiêu đề chủ đề không được dài quá 255 ký tự',
 
             'parentSubjectList.*.subjectId.not_in'      => 'Vui lòng chọn chủ đề cha',
 
@@ -47,10 +47,14 @@ class SubjectUpdateRequest extends FormRequest
         $updateParam->setLevel($this->level);
         $updateParam->setSequence($this->sequence);
 
-        $updateParam->setparentSubjectList(new DreamerTypeList($this->parentSubjectList));
+        $updateParam->setParentSubjectList(new DreamerTypeList($this->parentSubjectList));
+        $updateParam->setRemoveParentSubjectList(new DreamerTypeList($this->removeParentSubjectList));
 
         $updateParam->setBranchSubjectList(new DreamerTypeList($this->branchSubjectList));
+        $updateParam->setRemoveBranchSubjectList(new DreamerTypeList($this->removeBranchSubjectList));
+
         $updateParam->setKnowledgeArticleList(new DreamerTypeList($this->knowledgeArticleList));
+        $updateParam->setRemoveKnowledgeArticleList(new DreamerTypeList($this->removeKnowledgeArticleList));
 
         return $updateParam;
     }

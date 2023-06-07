@@ -15,9 +15,10 @@ return new class extends Migration
     {
         /**
          * 'kam'    <=>     'knowledge_article_master'
+         * 'ka'    <=>     'knowledge_article'
          **/
-        Schema::create('kam__note_content_units', function (Blueprint $table) {
-            $table->bigIncrements('note_content_unit_id');
+        Schema::create('kam__knowledge_article_note_content_units', function (Blueprint $table) {
+            $table->bigIncrements('knowledge_article_note_content_unit_id');
 
             /**
              * VD:
@@ -26,6 +27,8 @@ return new class extends Migration
             **/
             $table->string('title', 240)->default('');
             $table->longText('content')->default('');
+
+            $table->tinyInteger('sequence')->default(1);
 
             $table->boolean('is_private')->default(false);
 
@@ -49,6 +52,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kam__note_content_units');
+        Schema::dropIfExists('kam__knowledge_article_note_content_units');
     }
 };

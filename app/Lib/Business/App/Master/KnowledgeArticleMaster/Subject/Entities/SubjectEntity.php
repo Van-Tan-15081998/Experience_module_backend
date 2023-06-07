@@ -296,7 +296,148 @@ class SubjectEntity extends Model
                 'sequence'  => $param->getSequence(),
             ]);
 
+        $this->doUpdateParentSubject($param->getSubjectId(), $param);
+
+        $this->doUpdateBranchSubject($param->getSubjectId(), $param);
+
         return $param->getSubjectId();
+    }
+
+    public function doUpdateParentSubject(int $subjectId, AdminSubjectUpdateParam $param)
+    {
+        // Params for update or insert
+        $insertOrUpdateParams = $param->getParentSubjectList()->getList();
+
+        // Params for update
+        $updateParams = new DreamerTypeList([]);
+        // Params for insert
+        $insertParams = new DreamerTypeList([]);
+
+        foreach ($insertOrUpdateParams as $_param) {
+            if (!isset($_param['subjectBranchSubjectId'])) {
+                $insertParams->add($_param);
+            } else {
+                $updateParams->add($_param);
+            }
+        }
+
+        //---------------------------------------------------------
+        // INSERT
+        // Khi thêm mới, dữ liệu parentSubject truyền về Backend là tham số dạng
+        /**
+         * $parentSubject là tham số dạng mảng:
+         * [
+         *  { subjectId : 1 },
+         *  { subjectId : 2 },
+         *  { subjectId : 3 },
+         * ]
+         **/
+        //---------------------------------------------------------
+        $this->insertParentSubjectList($subjectId, $insertParams);
+
+        //---------------------------------------------------------
+        // UPDATE
+        // Khi lấy dữ liệu cập nhật, dữ liệu parentSubjectList truyền đến Frontend và truyền về Backend sẽ là tham số dạng
+        /**
+         * [
+         *  { subjectBranchSubjectId, subjectId : 1 },
+         *  { subjectBranchSubjectId, subjectId : 2 },
+         *  { subjectBranchSubjectId, subjectId : 3 },
+         * ]
+         * => subjectBranchSubjectId là key của table trung gian - kam__subject_branch_subject_allocations
+         **/
+        //---------------------------------------------------------
+        $this->updateParentSubjectList($subjectId, $updateParams);
+
+        //---------------------------------------------------------
+        // DELETE LOGICAL
+        //---------------------------------------------------------
+        // Params for delete
+        $deleteParams = $param->getRemoveParentSubjectList();
+
+        if(!$deleteParams->empty()) {
+            $this->deleteLogicalParentSubjectList($subjectId, $deleteParams->getList());
+        }
+    }
+
+    private function updateParentSubjectList(int $subjectId, DreamerTypeList $parentSubjectList): void
+    {
+        foreach ($parentSubjectList->getList() as $param) {
+            DB::table('kam__subject_branch_subject_allocations')
+                ->where('subject_branch_subject_allocation_id', '=', $param['subjectBranchSubjectId'])
+                ->update(['subject_id' => $param['subjectId']]);
+        }
+    }
+
+    public function doUpdateBranchSubject(int $subjectId, AdminSubjectUpdateParam $param)
+    {
+        // Params for update or insert
+        $insertOrUpdateParams = $param->getBranchSubjectList()->getList();
+
+        // Params for update
+        $updateParams = new DreamerTypeList([]);
+        // Params for insert
+        $insertParams = new DreamerTypeList([]);
+
+        foreach ($insertOrUpdateParams as $_param) {
+            if (!isset($_param['subjectBranchSubjectId'])) {
+                $insertParams->add($_param);
+            } else {
+                $updateParams->add($_param);
+            }
+        }
+
+        //---------------------------------------------------------
+        // INSERT
+        // Khi thêm mới, dữ liệu branchSubject truyền về Backend là tham số dạng
+        /**
+         * $branchSubject là tham số dạng mảng:
+         * [
+         *  { subjectId : 1 },
+         *  { subjectId : 2 },
+         *  { subjectId : 3 },
+         * ]
+         **/
+        //---------------------------------------------------------
+        $this->insertBranchSubjectList($subjectId, $insertParams);
+
+        //---------------------------------------------------------
+        // UPDATE
+        // Khi lấy dữ liệu cập nhật, dữ liệu branchSubjectList truyền đến Frontend và truyền về Backend sẽ là tham số dạng
+        /**
+         * [
+         *  { subjectBranchSubjectId, subjectId : 1 },
+         *  { subjectBranchSubjectId, subjectId : 2 },
+         *  { subjectBranchSubjectId, subjectId : 3 },
+         * ]
+         * => subjectBranchSubjectId là key của table trung gian - kam__subject_branch_subject_allocations
+         **/
+        //---------------------------------------------------------
+        $this->updateBranchSubjectList($subjectId, $updateParams);
+
+        //---------------------------------------------------------
+        // DELETE LOGICAL
+        //---------------------------------------------------------
+        // Params for delete
+        $deleteParams = $param->getRemoveBranchSubjectList();
+
+        if(!$deleteParams->empty()) {
+            $this->deleteLogicalBranchSubjectList($subjectId, $deleteParams->getList());
+        }
+    }
+
+    private function updateBranchSubjectList(int $subjectId, DreamerTypeList $parentSubjectList): void
+    {
+        foreach ($parentSubjectList->getList() as $param) {
+            DB::table('kam__subject_branch_subject_allocations')
+                ->where('subject_branch_subject_allocation_id', '=', $param['subjectBranchSubjectId'])
+                ->update(['branch_subject_id' => $param['subjectId']]);
+        }
+    }
+
+    public function doUpdateKnowledgeArticle(int $subjectId, AdminSubjectUpdateParam $param)
+    {
+
     }
 
     public function getParentSubjectListBySubjectId(int $subjectId): DreamerTypeList
@@ -334,7 +475,7 @@ class SubjectEntity extends Model
         $parentSubjectList = new DreamerTypeList([]);
 
         foreach ($result as $record) {
-            $parentSubject = AdminSubjectModel::createFromRecord($record);
+            $parentSubject = AdminSubjectModel::createFromRecordSpecial($record);
             $parentSubjectList->add($parentSubject);
         }
 
@@ -370,7 +511,7 @@ class SubjectEntity extends Model
         $branchSubjectList = new DreamerTypeList([]);
 
         foreach ($result as $record) {
-            $branchSubject = AdminSubjectModel::createFromRecord($record);
+            $branchSubject = AdminSubjectModel::createFromRecordSpecial($record);
             $branchSubjectList->add($branchSubject);
         }
 
@@ -406,9 +547,9 @@ class SubjectEntity extends Model
         return $knowledgeArticleList;
     }
 
-    public function getBranchSubjectList(): DreamerTypeList
+    public function getSubjectList(): DreamerTypeList
     {
-        return $this->selectBranchSubjectList();
+        return $this->selectSubjectList();
     }
 
     public function getKnowledgeArticleList(): DreamerTypeList
@@ -416,7 +557,7 @@ class SubjectEntity extends Model
         return $this->selectKnowledgeArticleList();
     }
 
-    public function selectBranchSubjectList(): DreamerTypeList
+    public function selectSubjectList(): DreamerTypeList
     {
         $query =
             "SELECT *"
@@ -429,14 +570,14 @@ class SubjectEntity extends Model
             return new DreamerTypeList([]);
         }
 
-        $branchSubjectList = new DreamerTypeList([]);
+        $subjectList = new DreamerTypeList([]);
 
         foreach ($result as $record) {
-            $branchSubject = AdminSubjectModel::createFromRecord($record);
-            $branchSubjectList->add($branchSubject);
+            $subject = AdminSubjectModel::createFromRecord($record);
+            $subjectList->add($subject);
         }
 
-        return $branchSubjectList;
+        return $subjectList;
     }
 
     public function selectKnowledgeArticleList(): DreamerTypeList
@@ -460,5 +601,23 @@ class SubjectEntity extends Model
         }
 
         return $knowledgeArticleList;
+    }
+
+    private function deleteLogicalParentSubjectList(int $subjectId, array $deleteParams): void
+    {
+        foreach ($deleteParams as $param) {
+            DB::table('kam__subject_branch_subject_allocations')
+                ->where('subject_branch_subject_allocation_id', '=', $param['subjectBranchSubjectId'])
+                ->update(['is_deleted' => true]);
+        }
+    }
+
+    private function deleteLogicalBranchSubjectList(int $subjectId, array $deleteParams): void
+    {
+        foreach ($deleteParams as $param) {
+            DB::table('kam__subject_branch_subject_allocations')
+                ->where('subject_branch_subject_allocation_id', '=', $param['subjectBranchSubjectId'])
+                ->update(['is_deleted' => true]);
+        }
     }
 }

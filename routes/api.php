@@ -5,6 +5,8 @@ use App\Http\Controllers\Master\FavoriteApp\Book\BookListController;
 use App\Http\Controllers\Master\FavoriteApp\Knowledge\KnowledgeController;
 use App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticle\KnowledgeArticleDetailController;
 use App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticle\KnowledgeArticleListController;
+use App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\KnowledgeArticleContentUnitDetailController;
+use App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\KnowledgeArticleContentUnitListController;
 use App\Http\Controllers\Master\KnowledgeArticleMaster\Subject\SubjectDetailController;
 use App\Http\Controllers\Master\KnowledgeArticleMaster\Subject\SubjectListController;
 use Illuminate\Http\Request;
@@ -73,8 +75,14 @@ Route::group(
         Route::post('/master/knowledge_article_master/subject/detail/update', [SubjectDetailController::class, 'update']);
 
 
-        Route::post('/master/knowledge_article_master/knowledge_article/detail', [KnowledgeArticleDetailController::class, 'initDisplay']);
+        Route::get('/master/knowledge_article_master/knowledge_article/list', [KnowledgeArticleListController::class, 'initDisplay']);
+        Route::get('/master/knowledge_article_master/knowledge_article/detail', [KnowledgeArticleDetailController::class, 'initDisplay']);
         Route::post('/master/knowledge_article_master/knowledge_article/register', [KnowledgeArticleDetailController::class, 'register']);
         Route::post('/master/knowledge_article_master/knowledge_article/update', [KnowledgeArticleDetailController::class, 'update']);
+
+        Route::get('/master/knowledge_article_master/knowledge_article_content_unit/list', [KnowledgeArticleContentUnitListController::class, 'initDisplay']);
+        Route::get('/master/knowledge_article_master/knowledge_article_content_unit/detail', [KnowledgeArticleContentUnitDetailController::class, 'initDisplay']);
+        Route::post('/master/knowledge_article_master/knowledge_article_content_unit/register', [KnowledgeArticleContentUnitDetailController::class, 'register']);
+        Route::post('/master/knowledge_article_master/knowledge_article_content_unit/update', [KnowledgeArticleContentUnitDetailController::class, 'update']);
     }
 );

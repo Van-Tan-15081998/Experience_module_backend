@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticle;
+namespace App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit;
 
 use App\Constants\AdminPageType;
 use App\Constants\DetailsAction;
-use App\Http\Controllers\Base\KnowledgeArticleMaster\KnowledgeArticle\KnowledgeArticleBaseController;
-use App\Http\Controllers\Base\KnowledgeArticleMaster\KnowledgeArticle\Model\KnowledgeArticleScreenRoleModel;
-use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\KnowledgeArticleBusiness;
+use App\Http\Controllers\Base\KnowledgeArticleMaster\KnowledgeArticleContentUnit\KnowledgeArticleContentUnitBaseController;
+use App\Http\Controllers\Base\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Model\KnowledgeArticleContentUnitScreenRoleModel;
+use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\KnowledgeArticleContentUnitBusiness;
 use App\Lib\Business\Common\Exception\DreamerBusinessException;
 use App\Lib\Business\Common\Exception\DreamerInvalidParameterException;
 use App\Lib\Business\Constants\DreamerCommonErrorCode;
 use App\Lib\Business\Specific\Staff\AccountRole\Models\RoleFunctionListModel;
 use App\Lib\Business\Specific\Staff\AccountRole\Models\RoleFunctionModel;
-use App\Http\Controllers\Base\Model\ScreenRoleModel;
 use App\Lib\Common\Type\DreamerTypeList;
 use App\Lib\Common\Type\DreamerTypeObject;
 use App\Lib\Common\Util\DreamerNumberUtil;
@@ -22,23 +21,24 @@ use App\Lib\WebCommon\Helpers\ResponseHelper;
 use App\Lib\WebCommon\Helpers\ResponseStatus;
 use App\Util\AdminExceptionUtil;
 use App\Util\ResponseStatusHelper;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Base\Model\ScreenRoleModel;
 
-class KnowledgeArticleDetailController extends KnowledgeArticleBaseController
+class KnowledgeArticleContentUnitDetailController extends KnowledgeArticleContentUnitBaseController
 {
-    private KnowledgeArticleBusiness $knowledgeArticleBusiness;
+    private KnowledgeArticleContentUnitBusiness $knowledgeArticleContentUnitBusiness;
 
     public function __construct()
     {
         parent::__construct();
-        $this->knowledgeArticleBusiness = new KnowledgeArticleBusiness();
+        $this->knowledgeArticleContentUnitBusiness = new KnowledgeArticleContentUnitBusiness();
     }
 
     protected function createScreenRole(int $screenId, ?array $screenOptional, RoleFunctionModel $role, RoleFunctionListModel $relatedScreenRoleList): ?ScreenRoleModel
     {
         // TODO: Implement createScreenRole() method.
-        $screenRole = new AdminKnowledgeArticleScreenRoleModel();
+        $screenRole = new AdminKnowledgeArticleContentUnitScreenRoleModel();
 
         $screenRole->setIsBrowse($role->isBrowse());
 
@@ -109,7 +109,7 @@ class KnowledgeArticleDetailController extends KnowledgeArticleBaseController
         return $this->responseOnSuccessfulWithCommonFields($data, $status, $screenOptional);
     }
 
-    public function register(KnowledgeArticleNewRequest $request): Response
+    public function register(KnowledgeArticleContentUnitNewRequest $request): Response
     {
         $mode = DetailsAction::NEW();
         $screenOptional = [
@@ -134,7 +134,7 @@ class KnowledgeArticleDetailController extends KnowledgeArticleBaseController
         // Quá trình thêm mới
         try {
 
-            $knowledgeArticleId = $this->knowledgeArticleBusiness->add($request);
+            $knowledgeArticleId = $this->knowledgeArticleContentUnitBusiness->add($request);
 
             $isSucceeded = true;
 
@@ -150,7 +150,7 @@ class KnowledgeArticleDetailController extends KnowledgeArticleBaseController
         if($isSucceeded) {
             try {
 
-                $saveData = $this->knowledgeArticleBusiness->getById(DetailsAction::EDIT(), $knowledgeArticleId);
+                $saveData = $this->knowledgeArticleContentUnitBusiness->getById(DetailsAction::EDIT(), $knowledgeArticleId);
                 $responseItems->addResponseItem('data', $saveData);
 
                 $isSucceeded = true;
@@ -185,7 +185,7 @@ class KnowledgeArticleDetailController extends KnowledgeArticleBaseController
         return $response;
     }
 
-    public function update(KnowledgeArticleUpdateRequest $request): Response
+    public function update(KnowledgeArticleContentUnitUpdateRequest $request): Response
     {
         if(!$this->validateUpdateParams($request)) {
             throw new DreamerInvalidParameterException();
@@ -217,7 +217,7 @@ class KnowledgeArticleDetailController extends KnowledgeArticleBaseController
         // Quá trình cập nhật
         try {
 
-            $knowledgeArticleId = $this->knowledgeArticleBusiness->update($request);
+            $knowledgeArticleId = $this->knowledgeArticleContentUnitBusiness->update($request);
 
             $isSucceeded = true;
 
@@ -233,7 +233,7 @@ class KnowledgeArticleDetailController extends KnowledgeArticleBaseController
         if($isSucceeded) {
             try {
 
-                $saveData = $this->knowledgeArticleBusiness->getById(DetailsAction::EDIT(), $knowledgeArticleId);
+                $saveData = $this->knowledgeArticleContentUnitBusiness->getById(DetailsAction::EDIT(), $knowledgeArticleId);
                 $responseItems->addResponseItem('data', $saveData);
 
                 $isSucceeded = true;
@@ -273,12 +273,12 @@ class KnowledgeArticleDetailController extends KnowledgeArticleBaseController
 //
 //    }
 
-    private function getMyRole(array $screenOptional=null): KnowledgeArticleScreenRoleModel
+    private function getMyRole(array $screenOptional=null): KnowledgeArticleContentUnitScreenRoleModel
     {
-        return parent::getKnowledgeArticleRole(AdminPageType::MASTER_KNOWLEDGE_ARTICLE_DETAIL(), $screenOptional);
+        return parent::getKnowledgeArticleContentUnitRole(AdminPageType::MASTER_KNOWLEDGE_ARTICLE_CONTENT_UNIT_DETAIL(), $screenOptional);
     }
 
-    private function getInitialDisplayData(int $knowledgeArticleId, string $mode, KnowledgeArticleScreenRoleModel $role): array
+    private function getInitialDisplayData(int $knowledgeArticleId, string $mode, KnowledgeArticleContentUnitScreenRoleModel $role): array
     {
         $data = new ResponseArrayModel();
         $status = null;
@@ -288,7 +288,7 @@ class KnowledgeArticleDetailController extends KnowledgeArticleBaseController
 
         try {
 
-            $adminKnowledgeArticle = $this->knowledgeArticleBusiness->getById(DetailsAction::fromKey($mode), $knowledgeArticleId);
+            $adminKnowledgeArticle = $this->knowledgeArticleContentUnitBusiness->getById(DetailsAction::fromKey($mode), $knowledgeArticleId);
 
             $data->addResponseItem('data', $adminKnowledgeArticle);
 
@@ -306,10 +306,10 @@ class KnowledgeArticleDetailController extends KnowledgeArticleBaseController
                     $selectionItems = new ResponseArrayModel();
 
                     if(DetailsAction::EDIT()->isSame($mode)) {
-                        $selectionItems = $this->knowledgeArticleBusiness->getEditSelectionItems($adminKnowledgeArticle);
+                        $selectionItems = $this->knowledgeArticleContentUnitBusiness->getEditSelectionItems($adminKnowledgeArticle);
                     } else if(DetailsAction::NEW()->isSame($mode)) {
                         // Với mode = new, sẽ lấy toàn bộ chủ đề cũng như bài viết
-                        $selectionItems = $this->knowledgeArticleBusiness->getNewSelectionItems($adminKnowledgeArticle);
+                        $selectionItems = $this->knowledgeArticleContentUnitBusiness->getNewSelectionItems($adminKnowledgeArticle);
                     }
 
                     $selectionItems = $selectionItems->toArray();
@@ -347,8 +347,8 @@ class KnowledgeArticleDetailController extends KnowledgeArticleBaseController
                                                             array $screenOptional=null      ): Response
     {
         return $this->apiResponseWithCommonFields(
-            AdminPageType::MASTER_KNOWLEDGE_ARTICLE_DETAIL(),
-            AdminPageType::MASTER_KNOWLEDGE_ARTICLE_LIST(),
+            AdminPageType::MASTER_KNOWLEDGE_ARTICLE_CONTENT_UNIT_DETAIL(),
+            AdminPageType::MASTER_KNOWLEDGE_ARTICLE_CONTENT_UNIT_LIST(),
             $data,
             ResponseStatusHelper::toList($status),
             $screenOptional
@@ -393,7 +393,7 @@ class KnowledgeArticleDetailController extends KnowledgeArticleBaseController
         return $this->apiResponseSimple($data, $status, $screenOptional);
     }
 
-    private function validateUpdateParams(KnowledgeArticleUpdateRequest $request): bool
+    private function validateUpdateParams(KnowledgeArticleContentUnitUpdateRequest $request): bool
     {
         if (!DreamerNumberUtil::isInt($request->knowledgeArticleId)) {
             return false;

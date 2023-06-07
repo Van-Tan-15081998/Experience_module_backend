@@ -17,6 +17,7 @@ class MasterFunction extends Seeder
     {
         //
         DB::table('master__functions')->insert([
+            // Book
             [
                 'function_id'           => 1,
                 'parent_function_id'    => 0,
@@ -33,6 +34,8 @@ class MasterFunction extends Seeder
                 'screen_id'             => '80000002',
                 'sequence'              => 1
             ],
+
+            // Subject
             [
                 'function_id'           => 3,
                 'parent_function_id'    => 0,
@@ -47,6 +50,42 @@ class MasterFunction extends Seeder
                 'name'                  => 'Subject Detail - Function',
                 'screen_name'           => 'Subject Detail',
                 'screen_id'             => '80000004',
+                'sequence'              => 1
+            ],
+
+            // Knowledge Article
+            [
+                'function_id'           => 5,
+                'parent_function_id'    => 0,
+                'name'                  => 'Knowledge Article List - Function',
+                'screen_name'           => 'Knowledge Article List',
+                'screen_id'             => '80000005',
+                'sequence'              => 1
+            ],
+            [
+                'function_id'           => 6,
+                'parent_function_id'    => 5,
+                'name'                  => 'Knowledge Article Detail - Function',
+                'screen_name'           => 'Knowledge Article Detail',
+                'screen_id'             => '80000006',
+                'sequence'              => 1
+            ],
+
+            // Knowledge Article Content Unit
+            [
+                'function_id'           => 7,
+                'parent_function_id'    => 0,
+                'name'                  => 'Knowledge Article Content Unit List - Function',
+                'screen_name'           => 'Knowledge Article Content Unit List',
+                'screen_id'             => '80000007',
+                'sequence'              => 1
+            ],
+            [
+                'function_id'           => 8,
+                'parent_function_id'    => 5,
+                'name'                  => 'Knowledge Article Content Unit Detail - Function',
+                'screen_name'           => 'Knowledge Article Content Unit Detail',
+                'screen_id'             => '80000008',
                 'sequence'              => 1
             ]
 

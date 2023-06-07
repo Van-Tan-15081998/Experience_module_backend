@@ -15,11 +15,12 @@ return new class extends Migration
     {
         /**
          * 'kam'    <=>     'knowledge_article_master'
+         * 'ka'    <=>     'knowledge_article'
          **/
-        Schema::create('kam__question_answer_content_units', function (Blueprint $table) {
-            $table->bigIncrements('question_answer_content_unit_id');
+        Schema::create('kam__knowledge_article_question_answer_content_units', function (Blueprint $table) {
+            $table->bigIncrements('knowledge_article_question_answer_content_unit_id');
 
-            $table->bigInteger('content_unit_id');
+            $table->bigInteger('knowledge_article_content_unit_id');
 
             $table->longText('question')->default('');
             $table->longText('answer')->default('');
@@ -44,6 +45,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kam__question_answer_content_units');
+        Schema::dropIfExists('kam__knowledge_article_question_answer_content_units');
     }
 };

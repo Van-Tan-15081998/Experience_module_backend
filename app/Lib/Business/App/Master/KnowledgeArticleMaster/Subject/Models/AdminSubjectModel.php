@@ -18,6 +18,9 @@ class AdminSubjectModel extends DreamerTypeObject
 
     private DreamerTypeList $knowledgeArticleList;
 
+    // Id bảng trung gian khi lấy parent subject list và branch subject list
+    private int             $subjectBranchSubjectId;
+
     private ?int            $createdAccountId;
     private ?int            $createdAccountLoginId;
     private ?string         $createdAccountName;
@@ -301,6 +304,22 @@ class AdminSubjectModel extends DreamerTypeObject
         $this->knowledgeArticleList = $knowledgeArticleList;
     }
 
+    /**
+     * @return int
+     */
+    public function getSubjectBranchSubjectId(): int
+    {
+        return $this->subjectBranchSubjectId;
+    }
+
+    /**
+     * @param int $subjectBranchSubjectId
+     */
+    public function setSubjectBranchSubjectId(int $subjectBranchSubjectId): void
+    {
+        $this->subjectBranchSubjectId = $subjectBranchSubjectId;
+    }
+
     public function init(): void
     {
         $this->title                   = 'Title mẫu nha';
@@ -351,6 +370,30 @@ class AdminSubjectModel extends DreamerTypeObject
         $model->title                   = $record->title;
         $model->level                   = $record->level;
         $model->sequence                = $record->sequence;
+
+        $model->createdAccountId        = $record->created_account_id;
+        $model->createdAccountLoginId   = $record->created_account_login_id;
+        $model->createdAccountName      = $record->created_account_name;
+        $model->createdDatetime         = $record->created_datetime;
+        $model->updatedAccountId        = $record->updated_account_id;
+        $model->updatedAccountLoginId   = $record->updated_account_login_id;
+        $model->updatedAccountName      = $record->updated_account_name;
+        $model->updatedDatetime         = $record->updated_datetime;
+        $model->recordVersion           = $record->record_version;
+        $model->isDeleted               = $record->is_deleted;
+
+        return $model;
+    }
+
+    public static function createFromRecordSpecial($record): AdminSubjectModel {
+        $model = new AdminSubjectModel();
+
+        $model->subjectId               = $record->subject_id;
+        $model->title                   = $record->title;
+        $model->level                   = $record->level;
+        $model->sequence                = $record->sequence;
+
+        $model->subjectBranchSubjectId  = $record->subject_branch_subject_allocation_id;
 
         $model->createdAccountId        = $record->created_account_id;
         $model->createdAccountLoginId   = $record->created_account_login_id;

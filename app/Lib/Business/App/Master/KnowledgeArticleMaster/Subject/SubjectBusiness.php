@@ -215,14 +215,14 @@ class SubjectBusiness extends ExperienceBaseBusiness
         $selectionItems = new ResponseArrayModel();
         $isExistEmptyList = false;
 
-        $branchSubjectList = $this->getBranchSubjectListBySubjectId($subject->getSubjectId());
+        $subjectList = $this->getSubjectList();
 
-        $knowledgeArticleList = $this->getKnowledgeArticleListBySubjectId($subject->getSubjectId());
+        $knowledgeArticleList = $this->getKnowledgeArticleList();
 
-        $selectionItems->addResponseItem('branchSubjectList', $branchSubjectList);
+        $selectionItems->addResponseItem('subjectList', $subjectList);
         $selectionItems->addResponseItem('knowledgeArticleList', $knowledgeArticleList);
 
-        $isExistEmptyList |= $branchSubjectList->empty() && $knowledgeArticleList->empty();
+        $isExistEmptyList |= $subjectList->empty() && $knowledgeArticleList->empty();
 
         $result = new ResponseArrayModel();
         $result->addResponseItem('searchItems', $selectionItems);
@@ -236,14 +236,14 @@ class SubjectBusiness extends ExperienceBaseBusiness
         $selectionItems = new ResponseArrayModel();
         $isExistEmptyList = false;
 
-        $branchSubjectList = $this->getBranchSubjectList();
+        $subjectList = $this->getSubjectList();
 
         $knowledgeArticleList = $this->getKnowledgeArticleList();
 
-        $selectionItems->addResponseItem('branchSubjectList', $branchSubjectList);
+        $selectionItems->addResponseItem('subjectList', $subjectList);
         $selectionItems->addResponseItem('knowledgeArticleList', $knowledgeArticleList);
 
-        $isExistEmptyList |= $branchSubjectList->empty() && $knowledgeArticleList->empty();
+        $isExistEmptyList |= $subjectList->empty() && $knowledgeArticleList->empty();
 
         $result = new ResponseArrayModel();
         $result->addResponseItem('searchItems', $selectionItems);
@@ -252,13 +252,13 @@ class SubjectBusiness extends ExperienceBaseBusiness
         return $result;
     }
 
-    public function getBranchSubjectList(): DreamerTypeList
+    public function getSubjectList(): DreamerTypeList
     {
         $result = null;
 
         try {
 
-            $result = $this->subjectEntity->getBranchSubjectList();
+            $result = $this->subjectEntity->getSubjectList();
 
         } catch (\Exception $e) {
             DreamerExceptionConverter::convertException($e);

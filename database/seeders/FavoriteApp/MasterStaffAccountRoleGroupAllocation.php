@@ -26,6 +26,16 @@ class MasterStaffAccountRoleGroupAllocation extends Seeder
                 'staff_account_role_group_allocation_id'    => 2,
                 'staff_account_id'                          => 1,
                 'role_group_id'                             => 2
+            ],
+            [
+                'staff_account_role_group_allocation_id'    => 3,
+                'staff_account_id'                          => 1,
+                'role_group_id'                             => 3
+            ],
+            [
+                'staff_account_role_group_allocation_id'    => 4,
+                'staff_account_id'                          => 1,
+                'role_group_id'                             => 4
             ]
         ]);
     }

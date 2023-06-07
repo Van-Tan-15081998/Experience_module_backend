@@ -15,11 +15,12 @@ return new class extends Migration
     {
         /**
          * 'kam'    <=>     'knowledge_article_master'
+         * 'ka'    <=>     'knowledge_article'
          **/
-        Schema::create('kam__content_unit_note_content_unit_allocations', function (Blueprint $table) {
-            $table->bigIncrements('content_unit_note_content_unit_allocation_id');
-            $table->bigInteger('content_unit_id');
-            $table->bigInteger('note_content_unit_id');
+        Schema::create('kam__ka_content_unit_ka_note_content_unit_allocations', function (Blueprint $table) {
+            $table->bigIncrements('ka_content_unit_ka_note_content_unit_allocation_id');
+            $table->bigInteger('knowledge_article_content_unit_id');
+            $table->bigInteger('knowledge_article_note_content_unit_id');
 
             $table->bigInteger('created_account_id')->default(0);
             $table->bigInteger('created_account_login_id')->default(0);
@@ -41,6 +42,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kam__content_unit_note_content_unit_allocations');
+        Schema::dropIfExists('kam__ka_content_unit_ka_note_content_unit_allocations');
     }
 };

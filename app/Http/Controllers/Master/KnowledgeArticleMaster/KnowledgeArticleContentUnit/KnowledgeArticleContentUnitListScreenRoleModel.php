@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticle;
+namespace App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit;
 
-use App\Http\Controllers\Base\KnowledgeArticleMaster\KnowledgeArticle\Model\KnowledgeArticleScreenRoleModel;
+use App\Http\Controllers\Base\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Model\KnowledgeArticleContentUnitScreenRoleModel;
 
-class KnowledgeArticleListScreenRoleModel extends KnowledgeArticleScreenRoleModel
+class KnowledgeArticleContentUnitListScreenRoleModel extends KnowledgeArticleContentUnitScreenRoleModel
 {
     private bool $isBrowseForDetail;
 

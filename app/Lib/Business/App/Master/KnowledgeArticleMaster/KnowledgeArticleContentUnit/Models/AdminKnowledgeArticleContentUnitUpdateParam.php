@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models;
+namespace App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models;
 
-class AdminKnowledgeArticleUpdateParam
+class AdminKnowledgeArticleContentUnitUpdateParam
 {
     private ?int        $knowledgeArticleId = null;
 
     private string      $title;
-
-    private int         $subjectId;
 
     /**
      * @return int|null
@@ -42,19 +40,5 @@ class AdminKnowledgeArticleUpdateParam
         $this->title = $title;
     }
 
-    /**
-     * @return int
-     */
-    public function getSubjectId(): int
-    {
-        return $this->subjectId;
-    }
 
-    /**
-     * @param int $subjectId
-     */
-    public function setSubjectId(int $subjectId): void
-    {
-        $this->subjectId = $subjectId;
-    }
 }

@@ -15,9 +15,12 @@ return new class extends Migration
     {
         /**
          * 'kam'    <=>     'knowledge_article_master'
+         * 'ka'    <=>     'knowledge_article'
          **/
-        Schema::create('kam__related_content_units', function (Blueprint $table) {
-            $table->bigIncrements('related_content_unit_id');
+        Schema::create('kam__knowledge_article_related_content_units', function (Blueprint $table) {
+            $table->bigIncrements('knowledge_article_related_content_unit_id');
+
+            $table->tinyInteger('sequence')->default(1);
 
             $table->bigInteger('created_account_id')->default(0);
             $table->bigInteger('created_account_login_id')->default(0);
@@ -39,6 +42,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kam__related_content_units');
+        Schema::dropIfExists('kam__knowledge_article_related_content_units');
     }
 };

@@ -13,9 +13,13 @@ class AdminSubjectUpdateParam
     private int         $sequence;
 
     private DreamerTypeList $parentSubjectList;
+    private DreamerTypeList $removeParentSubjectList;
 
     private DreamerTypeList $branchSubjectList;
+    private DreamerTypeList $removeBranchSubjectList;
+
     private DreamerTypeList $knowledgeArticleList;
+    private DreamerTypeList $removeKnowledgeArticleList;
 
     /**
      * @return int|null
@@ -127,5 +131,53 @@ class AdminSubjectUpdateParam
     public function setKnowledgeArticleList(DreamerTypeList $knowledgeArticleList): void
     {
         $this->knowledgeArticleList = $knowledgeArticleList;
+    }
+
+    /**
+     * @return DreamerTypeList
+     */
+    public function getRemoveParentSubjectList(): DreamerTypeList
+    {
+        return $this->removeParentSubjectList;
+    }
+
+    /**
+     * @param DreamerTypeList $removeParentSubjectList
+     */
+    public function setRemoveParentSubjectList(DreamerTypeList $removeParentSubjectList): void
+    {
+        $this->removeParentSubjectList = $removeParentSubjectList;
+    }
+
+    /**
+     * @return DreamerTypeList
+     */
+    public function getRemoveBranchSubjectList(): DreamerTypeList
+    {
+        return $this->removeBranchSubjectList;
+    }
+
+    /**
+     * @param DreamerTypeList $removeBranchSubjectList
+     */
+    public function setRemoveBranchSubjectList(DreamerTypeList $removeBranchSubjectList): void
+    {
+        $this->removeBranchSubjectList = $removeBranchSubjectList;
+    }
+
+    /**
+     * @return DreamerTypeList
+     */
+    public function getRemoveKnowledgeArticleList(): DreamerTypeList
+    {
+        return $this->removeKnowledgeArticleList;
+    }
+
+    /**
+     * @param DreamerTypeList $removeKnowledgeArticleList
+     */
+    public function setRemoveKnowledgeArticleList(DreamerTypeList $removeKnowledgeArticleList): void
+    {
+        $this->removeKnowledgeArticleList = $removeKnowledgeArticleList;
     }
 }
