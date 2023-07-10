@@ -23,6 +23,10 @@ Các packages dùng trong project:
 
     - Passport: https://laravel.com/docs/9.x/passport
 
+    - intervention/image: Xử lý File upload
+        + https://packagist.org/packages/intervention/image
+        + https://viblo.asia/p/upload-file-voi-vuejs-va-laravel-bJzKm0Dr59N
+
 
 ------------------------------------------------------------------------------------------------------------------------
 Chạy project với Passport (Sau khi đã cài đặt)

@@ -12,6 +12,8 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
 
 //    private int             $subjectId;
 
+    private DreamerTypeList $unitContentList;
+
     private ?int            $createdAccountId;
     private ?int            $createdAccountLoginId;
     private ?string         $createdAccountName;
@@ -55,6 +57,22 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
         $this->title = $title;
     }
 
+    /**
+     * @return DreamerTypeList
+     */
+    public function getUnitContentList(): DreamerTypeList
+    {
+        return $this->unitContentList;
+    }
+
+    /**
+     * @param DreamerTypeList $unitContentList
+     */
+    public function setUnitContentList(DreamerTypeList $unitContentList): void
+    {
+        $this->unitContentList = $unitContentList;
+    }
+
 //    /**
 //     * @return int
 //     */
@@ -70,6 +88,8 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
 //    {
 //        $this->subjectId = $subjectId;
 //    }
+
+
 
     /**
      * @return int|null

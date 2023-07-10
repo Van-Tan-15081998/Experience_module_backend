@@ -93,14 +93,15 @@ class KnowledgeArticleContentUnitDetailController extends KnowledgeArticleConten
         ];
 
         $role = $this->getMyRole($screenOptional);
-        $knowledgeArticleId = (int)$request->knowledgeArticleId;
+//        $knowledgeArticleId = (int)$request->knowledgeArticleId;
+        $knowledgeArticleContentUnitId = (int)$request->knowledgeArticleContentUnitId;
 
         if(!$role->isBrowse()) {
 
             $status = ResponseStatusHelper::createUnauthorized(true);
         } else {
 
-            $resultArray = $this->getInitialDisplayData($knowledgeArticleId, $mode, $role);
+            $resultArray = $this->getInitialDisplayData($knowledgeArticleContentUnitId, $mode, $role);
 
             $data = $resultArray['data'];
             $status = $resultArray['status'];
@@ -278,7 +279,7 @@ class KnowledgeArticleContentUnitDetailController extends KnowledgeArticleConten
         return parent::getKnowledgeArticleContentUnitRole(AdminPageType::MASTER_KNOWLEDGE_ARTICLE_CONTENT_UNIT_DETAIL(), $screenOptional);
     }
 
-    private function getInitialDisplayData(int $knowledgeArticleId, string $mode, KnowledgeArticleContentUnitScreenRoleModel $role): array
+    private function getInitialDisplayData(int $knowledgeArticleContentUnitId, string $mode, KnowledgeArticleContentUnitScreenRoleModel $role): array
     {
         $data = new ResponseArrayModel();
         $status = null;
@@ -288,9 +289,9 @@ class KnowledgeArticleContentUnitDetailController extends KnowledgeArticleConten
 
         try {
 
-            $adminKnowledgeArticle = $this->knowledgeArticleContentUnitBusiness->getById(DetailsAction::fromKey($mode), $knowledgeArticleId);
+            $adminKnowledgeArticleContentUnit = $this->knowledgeArticleContentUnitBusiness->getById(DetailsAction::fromKey($mode), $knowledgeArticleContentUnitId);
 
-            $data->addResponseItem('data', $adminKnowledgeArticle);
+            $data->addResponseItem('data', $adminKnowledgeArticleContentUnit);
 
             $isSucceeded = true;
 
@@ -306,10 +307,10 @@ class KnowledgeArticleContentUnitDetailController extends KnowledgeArticleConten
                     $selectionItems = new ResponseArrayModel();
 
                     if(DetailsAction::EDIT()->isSame($mode)) {
-                        $selectionItems = $this->knowledgeArticleContentUnitBusiness->getEditSelectionItems($adminKnowledgeArticle);
+                        $selectionItems = $this->knowledgeArticleContentUnitBusiness->getEditSelectionItems($adminKnowledgeArticleContentUnit);
                     } else if(DetailsAction::NEW()->isSame($mode)) {
                         // Với mode = new, sẽ lấy toàn bộ chủ đề cũng như bài viết
-                        $selectionItems = $this->knowledgeArticleContentUnitBusiness->getNewSelectionItems($adminKnowledgeArticle);
+                        $selectionItems = $this->knowledgeArticleContentUnitBusiness->getNewSelectionItems($adminKnowledgeArticleContentUnit);
                     }
 
                     $selectionItems = $selectionItems->toArray();

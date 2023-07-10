@@ -6,12 +6,14 @@ use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models\A
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models\AdminKnowledgeArticleModel;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models\AdminKnowledgeArticlePaginationModel;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models\AdminKnowledgeArticleUpdateParam;
+use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitModel;
 use App\Lib\Business\Common\Exception\DreamerBusinessException;
 use App\Lib\Business\Common\Exception\DreamerExceptionConverter;
 use App\Lib\Business\Constants\DreamerCommonErrorCode;
 use App\Lib\Common\Core\DataSource\Models\PageInfo;
 use App\Lib\Common\Core\DataSource\Models\PaginationInfo;
 use App\Lib\Common\Core\DataSource\Models\PaginationModel;
+use App\Lib\Common\Type\DreamerTypeList;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -175,6 +177,27 @@ class KnowledgeArticleEntity extends Model
         }
 
         $adminKnowledgeArticle =  AdminKnowledgeArticleModel::createFromRecord($result[0]);
+
+        // Lấy danh sách Unit Content
+        $getUnitContentQuery =
+            "SELECT *"
+            .   " FROM kam__knowledge_article_content_units"
+            .   " JOIN kam__ka_ka_content_unit_allocations"
+            .       " ON kam__knowledge_article_content_units.knowledge_article_content_unit_id = kam__ka_ka_content_unit_allocations.knowledge_article_content_unit_id"
+            .       " AND kam__ka_ka_content_unit_allocations.knowledge_article_id = " . $knowledgeArticleId
+            .   " WHERE kam__knowledge_article_content_units.is_deleted = 0"
+            .   " AND kam__ka_ka_content_unit_allocations.is_deleted = 0";
+
+        $unitContentList = DB::select($getUnitContentQuery);
+
+        $unitContentListResult = new DreamerTypeList([]);
+
+        foreach($unitContentList as $unitContent) {
+            $item = AdminKnowledgeArticleContentUnitModel::createFromRecord($unitContent);
+            $unitContentListResult->add($item);
+        }
+
+        $adminKnowledgeArticle->setUnitContentList($unitContentListResult);
 
         return $adminKnowledgeArticle;
     }

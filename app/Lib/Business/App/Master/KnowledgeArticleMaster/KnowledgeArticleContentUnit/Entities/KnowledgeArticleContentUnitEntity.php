@@ -3,6 +3,7 @@
 namespace App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Entities;
 
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitModel;
+use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitNewParam;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitUpdateParam;
 use App\Lib\Business\Common\Exception\DreamerBusinessException;
 use App\Lib\Business\Common\Exception\DreamerExceptionConverter;
@@ -58,13 +59,13 @@ class KnowledgeArticleContentUnitEntity extends Model
         return $detail;
     }
 
-    public function selectById(int $knowledgeArticleId): ?AdminKnowledgeArticleContentUnitModel
+    public function selectById(int $knowledgeArticleContentUnitId): ?AdminKnowledgeArticleContentUnitModel
     {
         $query =
             "SELECT *"
-            . " FROM kam__knowledge_articles"
-            . " WHERE kam__knowledge_articles.knowledge_article_id = " . $knowledgeArticleId
-            . " AND kam__knowledge_articles.is_deleted = 0 ";
+            . " FROM kam__knowledge_article_content_units"
+            . " WHERE kam__knowledge_article_content_units.knowledge_article_content_unit_id = " . $knowledgeArticleContentUnitId
+            . " AND kam__knowledge_article_content_units.is_deleted = 0 ";
 
         $result = DB::select($query);
 
@@ -72,9 +73,9 @@ class KnowledgeArticleContentUnitEntity extends Model
             return null;
         }
 
-        $adminKnowledgeArticle =  AdminKnowledgeArticleContentUnitModel::createFromRecord($result[0]);
+        $adminKnowledgeArticleContentUnit =  AdminKnowledgeArticleContentUnitModel::createFromRecord($result[0]);
 
-        return $adminKnowledgeArticle;
+        return $adminKnowledgeArticleContentUnit;
     }
 
     public function getEditKnowledgeArticleById(int $knowledgeArticleId): AdminKnowledgeArticleContentUnitModel
@@ -115,24 +116,63 @@ class KnowledgeArticleContentUnitEntity extends Model
         return $adminKnowledgeArticle;
     }
 
-    public function insertKnowledgeArticleContentUnit(AdminKnowledgeArticleContentUnitUpdateParam $param): int
+    public function getEditKnowledgeArticleContentUnitById($knowledgeArticleContentUnitId)
     {
-        $knowledgeArticleId = DB::table('kam__knowledge_articles')->insertGetId(
+        $detail = null;
+
+        try {
+            $detail = $this->selectEditKnowledgeArticleContentUnitById($knowledgeArticleContentUnitId);
+
+        } catch (\Exception $e) {
+            DreamerExceptionConverter::convertException($e);
+        }
+
+        if(is_null($detail)) {
+            throw new DreamerBusinessException( DreamerCommonErrorCode::E00000000002()->getCode(),
+                DreamerCommonErrorCode::E00000000002()->getDescription());
+        }
+
+        return $detail;
+    }
+
+    public function selectEditKnowledgeArticleContentUnitById(int $knowledgeArticleContentUnitId): ?AdminKnowledgeArticleContentUnitModel
+    {
+        $query =
+            "SELECT *"
+            . " FROM kam__knowledge_article_content_units"
+            . " WHERE kam__knowledge_article_content_units.knowledge_article_content_unit_id = " . $knowledgeArticleContentUnitId
+            . " AND kam__knowledge_article_content_units.is_deleted = 0 ";
+
+        $result = DB::select($query);
+
+        if (is_null($result) || empty($result)) {
+            return null;
+        }
+
+        $adminKnowledgeArticleContentUnit =  AdminKnowledgeArticleContentUnitModel::createFromRecordForEdit($result[0]);
+
+        return $adminKnowledgeArticleContentUnit;
+    }
+
+    public function insertKnowledgeArticleContentUnit(AdminKnowledgeArticleContentUnitNewParam $param): int
+    {
+        $knowledgeArticleContentUnitId = DB::table('kam__knowledge_article_content_units')->insertGetId(
             [
                 'title'     => $param->getTitle(),
+                'unit_content'   => $param->getUnitContent()
             ]
         );
 
-        if($knowledgeArticleId) {
-            DB::table('kam__subject_knowledge_article_allocations')->insert(
+        if($knowledgeArticleContentUnitId) {
+            DB::table('kam__ka_ka_content_unit_allocations')->insert(
                 [
-                    'knowledge_article_id'  => $knowledgeArticleId,
-                    'subject_id'            => $param->getSubjectId()
+                    'knowledge_article_id'  => $param->getKnowledgeArticleId(),
+                    'knowledge_article_content_unit_id' => $knowledgeArticleContentUnitId,
                 ]
             );
         }
 
-        return $knowledgeArticleId;
+        return $knowledgeArticleContentUnitId;
     }
 
     public function updateKnowledgeArticle(AdminKnowledgeArticleContentUnitUpdateParam $param): int

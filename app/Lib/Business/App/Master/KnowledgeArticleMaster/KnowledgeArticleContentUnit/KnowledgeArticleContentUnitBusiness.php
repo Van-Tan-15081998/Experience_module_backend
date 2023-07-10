@@ -8,6 +8,7 @@ use App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticleContentUn
 use App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\KnowledgeArticleContentUnitUpdateRequest;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Entities\KnowledgeArticleContentUnitEntity;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitModel;
+use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitNewParam;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitPaginationModel;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitUpdateParam;
 use App\Lib\Business\Base\ExperienceBaseBusiness;
@@ -68,21 +69,21 @@ class KnowledgeArticleContentUnitBusiness extends ExperienceBaseBusiness
     /**
      * TODO: Add - Start [
      **/
-    public function add(KnowledgeArticleContentUnitUpdateRequest $request): int
+    public function add(KnowledgeArticleContentUnitNewRequest $request): int
     {
         // Get update params
-        $updateParam = $request->getUpdateParam();
+        $newParam = $request->getNewParam();
 
         // Validate input params
-        $errors = $this->validateSaveParams($updateParam, $request);
+        $errors = $this->validateSaveParams($newParam, $request);
         if (isset($errors)) {
             throw new DreamerValidationBusinessException($errors);
         }
 
-        return $this->_add($updateParam);
+        return $this->_add($newParam);
     }
 
-    private function _add(AdminKnowledgeArticleContentUnitUpdateParam $param): int
+    private function _add(AdminKnowledgeArticleContentUnitNewParam $param): int
     {
         $result = null;
 
@@ -98,9 +99,9 @@ class KnowledgeArticleContentUnitBusiness extends ExperienceBaseBusiness
         return $result;
     }
 
-    private function _insertKnowledgeArticleContentUnit(AdminKnowledgeArticleContentUnitUpdateParam $param): int {
+    private function _insertKnowledgeArticleContentUnit(AdminKnowledgeArticleContentUnitNewParam $param): int {
 
-        $isValid = $this->validateUpdateParams($param);
+        $isValid = $this->validateNewParams($param);
 
         // Nếu xảy ra lỗi [[['Dữ liệu không thống nhất' - DreamerCommonErrorCode::E00000000004()]]]
         if (!$isValid) {
@@ -198,12 +199,17 @@ class KnowledgeArticleContentUnitBusiness extends ExperienceBaseBusiness
         return $result;
     }
 
+    private function validateNewParams(AdminKnowledgeArticleContentUnitNewParam $param): bool
+    {
+        return true;
+    }
+
     private function validateUpdateParams(AdminKnowledgeArticleContentUnitUpdateParam $param): bool
     {
         return true;
     }
 
-    private function validateSaveParams(AdminKnowledgeArticleContentUnitUpdateParam $updateParam, KnowledgeArticleContentUnitNewRequest | KnowledgeArticleContentUnitUpdateRequest $request): ?DreamerValidationErrors
+    private function validateSaveParams(AdminKnowledgeArticleContentUnitNewParam | AdminKnowledgeArticleContentUnitUpdateParam $param, KnowledgeArticleContentUnitNewRequest | KnowledgeArticleContentUnitUpdateRequest $request): ?DreamerValidationErrors
     {
         //
         $errors = new DreamerValidationErrors();

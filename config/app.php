@@ -84,6 +84,8 @@ return [
 
     'locale' => 'en',
 
+    'locales' => ['vi', 'en'],
+
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale
@@ -195,6 +197,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+//        Package hỗ trợ xử lý file upload
+        Intervention\Image\ImageServiceProvider::class,
+
     ],
 
     /*
@@ -210,6 +215,9 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+
+        //        Package hỗ trợ xử lý file upload
+        'Image' => Intervention\Image\Facades\Image::class,
     ])->toArray(),
 
 ];

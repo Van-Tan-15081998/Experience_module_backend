@@ -79,6 +79,15 @@ class KnowledgeArticleBusiness extends ExperienceBaseBusiness
             throw new DreamerValidationBusinessException($errors);
         }
 
+        // TODO: TEST_UPLOAD_FILE
+        // TODO: Lưu ý lỗi: https://stackoverflow.com/questions/34009844/gd-library-extension-not-available-with-this-php-installation-ubuntu-nginx
+        if($request->get('image'))
+        {
+            $image = $request->get('image');
+            $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
+            \Image::make($request->get('image'))->save(public_path('images/').$name);
+        }
+
         return $this->_add($updateParam);
     }
 

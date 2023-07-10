@@ -4,6 +4,7 @@ namespace App\Lib\WebCommon\Helpers;
 
 use App\Lib\Business\Common\Models\DreamerValidationErrors;
 use App\Lib\Common\Type\DreamerTypeList;
+use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Validation\ValidationException;
 
@@ -33,6 +34,11 @@ class ResponseHelper
 
         if (isset($contents)) {
             $responseData['contents'] = $contents;
+
+            // TODO: Test Lang
+            App::setLocale('vi');
+            $responseData['contents'][] = __('experiencelang.experience');
+//            $responseData['contents'][] = __('auth.failed');
         }
 
         if (is_null($data)) {

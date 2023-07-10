@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit;
 
+use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitNewParam;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitUpdateParam;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -16,6 +17,7 @@ class KnowledgeArticleContentUnitNewRequest extends FormRequest
     {
         $rules = [
             'title' => 'required|max:255',
+            'unitContent' => 'required',
             'knowledgeArticleId' => 'required'
         ];
 
@@ -25,20 +27,22 @@ class KnowledgeArticleContentUnitNewRequest extends FormRequest
     public function messages(): array
     {
         $messages = [
-            'title.required'            => 'Tiêu đề Unit là bắt buộc',
+            'title.required'            => 'Tiêu đề của Unit là bắt buộc',
+            'unitContent.required'            => 'Nội dung của Unit là bắt buộc',
             'knowledgeArticleId.required' => 'Vui lòng thêm Unit từ bài viết của bạn'
         ];
 
         return $messages;
     }
 
-    public function getUpdateParam(): AdminKnowledgeArticleContentUnitUpdateParam
+    public function getNewParam(): AdminKnowledgeArticleContentUnitNewParam
     {
-        $updateParam = new AdminKnowledgeArticleContentUnitUpdateParam();
+        $newParam = new AdminKnowledgeArticleContentUnitNewParam();
 
-        $updateParam->setKnowledgeArticleId($this->knowledgeArticleId);
-        $updateParam->setTitle($this->title);
+        $newParam->setKnowledgeArticleId($this->knowledgeArticleId);
+        $newParam->setTitle($this->title);
+        $newParam->setUnitContent($this->unitContent);
 
-        return $updateParam;
+        return $newParam;
     }
 }
