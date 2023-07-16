@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit;
 
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitUpdateParam;
+use App\Lib\Common\Type\DreamerTypeList;
 use Illuminate\Foundation\Http\FormRequest;
 
 class KnowledgeArticleContentUnitUpdateRequest extends FormRequest
@@ -16,6 +17,7 @@ class KnowledgeArticleContentUnitUpdateRequest extends FormRequest
     {
         $rules = [
             'title' => 'required|max:255',
+            'unitContent' => 'required',
         ];
 
         return $rules;
@@ -25,6 +27,7 @@ class KnowledgeArticleContentUnitUpdateRequest extends FormRequest
     {
         $messages = [
             'title.required'            => 'Tiêu đề Unit là bắt buộc',
+            'unitContent.required'            => 'Nội dung của Unit là bắt buộc',
         ];
 
         return $messages;
@@ -34,7 +37,10 @@ class KnowledgeArticleContentUnitUpdateRequest extends FormRequest
     {
         $updateParam = new AdminKnowledgeArticleContentUnitUpdateParam();
 
+        $updateParam->setKnowledgeArticleContentUnitId($this->knowledgeArticleContentUnitId);
         $updateParam->setTitle($this->title);
+        $updateParam->setUnitContent($this->unitContent);
+        $updateParam->setImageList(new DreamerTypeList($this->imageList));
 
         return $updateParam;
     }

@@ -200,7 +200,7 @@ class KnowledgeArticleContentUnitDetailController extends KnowledgeArticleConten
 
         $role = $this->getMyRole($screenOptional);
 
-        $knowledgeArticleId = (int)$request->knowledgeArticleId;
+        $knowledgeArticleContentUnitId = (int)$request->knowledgeArticleContentUnitId;
 
         if(!$role->isEdit()) {
             // Không được phép / Không có quyền
@@ -218,7 +218,7 @@ class KnowledgeArticleContentUnitDetailController extends KnowledgeArticleConten
         // Quá trình cập nhật
         try {
 
-            $knowledgeArticleId = $this->knowledgeArticleContentUnitBusiness->update($request);
+            $knowledgeArticleContentUnitId = $this->knowledgeArticleContentUnitBusiness->update($request);
 
             $isSucceeded = true;
 
@@ -234,7 +234,7 @@ class KnowledgeArticleContentUnitDetailController extends KnowledgeArticleConten
         if($isSucceeded) {
             try {
 
-                $saveData = $this->knowledgeArticleContentUnitBusiness->getById(DetailsAction::EDIT(), $knowledgeArticleId);
+                $saveData = $this->knowledgeArticleContentUnitBusiness->getById(DetailsAction::EDIT(), $knowledgeArticleContentUnitId);
                 $responseItems->addResponseItem('data', $saveData);
 
                 $isSucceeded = true;
@@ -396,7 +396,7 @@ class KnowledgeArticleContentUnitDetailController extends KnowledgeArticleConten
 
     private function validateUpdateParams(KnowledgeArticleContentUnitUpdateRequest $request): bool
     {
-        if (!DreamerNumberUtil::isInt($request->knowledgeArticleId)) {
+        if (!DreamerNumberUtil::isInt($request->knowledgeArticleContentUnitId)) {
             return false;
         }
 

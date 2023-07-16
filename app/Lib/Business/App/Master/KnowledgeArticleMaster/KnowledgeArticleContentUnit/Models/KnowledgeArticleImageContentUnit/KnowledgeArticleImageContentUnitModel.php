@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models;
+namespace App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\KnowledgeArticleImageContentUnit;
 
-use App\Lib\Common\Type\DreamerTypeList;
 use App\Lib\Common\Type\DreamerTypeObject;
 
-class AdminKnowledgeArticleContentUnitModel extends DreamerTypeObject
+class KnowledgeArticleImageContentUnitModel extends DreamerTypeObject
 {
+    private int             $knowledgeArticleImageContentUnitId;
     private int             $knowledgeArticleContentUnitId;
-    private string          $title;
-    private string          $unitContent;
+    private string          $imageSource;
+    private string          $imageTitle;
     private int             $sequence;
-
-    private DreamerTypeList $imageList;
 
     private ?int            $createdAccountId;
     private ?int            $createdAccountLoginId;
@@ -24,6 +22,22 @@ class AdminKnowledgeArticleContentUnitModel extends DreamerTypeObject
     private ?string         $updatedDatetime;
     private ?int            $recordVersion;
     private ?bool           $isDeleted;
+
+    /**
+     * @return int
+     */
+    public function getKnowledgeArticleImageContentUnitId(): int
+    {
+        return $this->knowledgeArticleImageContentUnitId;
+    }
+
+    /**
+     * @param int $knowledgeArticleImageContentUnitId
+     */
+    public function setKnowledgeArticleImageContentUnitId(int $knowledgeArticleImageContentUnitId): void
+    {
+        $this->knowledgeArticleImageContentUnitId = $knowledgeArticleImageContentUnitId;
+    }
 
     /**
      * @return int
@@ -44,33 +58,33 @@ class AdminKnowledgeArticleContentUnitModel extends DreamerTypeObject
     /**
      * @return string
      */
-    public function getTitle(): string
+    public function getImageSource(): string
     {
-        return $this->title;
+        return $this->imageSource;
     }
 
     /**
-     * @param string $title
+     * @param string $imageSource
      */
-    public function setTitle(string $title): void
+    public function setImageSource(string $imageSource): void
     {
-        $this->title = $title;
+        $this->imageSource = $imageSource;
     }
 
     /**
      * @return string
      */
-    public function getUnitContent(): string
+    public function getImageTitle(): string
     {
-        return $this->unitContent;
+        return $this->imageTitle;
     }
 
     /**
-     * @param string $unitContent
+     * @param string $imageTitle
      */
-    public function setUnitContent(string $unitContent): void
+    public function setImageTitle(string $imageTitle): void
     {
-        $this->unitContent = $unitContent;
+        $this->imageTitle = $imageTitle;
     }
 
     /**
@@ -249,69 +263,14 @@ class AdminKnowledgeArticleContentUnitModel extends DreamerTypeObject
         $this->isDeleted = $isDeleted;
     }
 
-    /**
-     * @return DreamerTypeList
-     */
-    public function getImageList(): DreamerTypeList
-    {
-        return $this->imageList;
-    }
+    public static function createFromRecord($record): KnowledgeArticleImageContentUnitModel {
+        $model = new KnowledgeArticleImageContentUnitModel();
 
-    /**
-     * @param DreamerTypeList $imageList
-     */
-    public function setImageList(DreamerTypeList $imageList): void
-    {
-        $this->imageList = $imageList;
-    }
-
-    public function init(): void
-    {
-        $this->title                   = 'Title mẫu nha';
-        $this->unitContent             = 'Content mẫu nha';
-        $this->sequence                = 1;
-
-        $this->createdAccountId        = null;
-        $this->createdAccountLoginId   = null;
-        $this->createdAccountName      = '';
-        $this->createdDatetime         = '';
-        $this->updatedAccountId        = null;
-        $this->updatedAccountLoginId   = null;
-        $this->updatedAccountName      = '';
-        $this->updatedDatetime         = '';
-        $this->recordVersion           = null;
-        $this->isDeleted               = null;
-    }
-
-    public static function createFromRecord($record): AdminKnowledgeArticleContentUnitModel {
-        $model = new AdminKnowledgeArticleContentUnitModel();
-
-        $model->knowledgeArticleContentUnitId      = $record->knowledge_article_content_unit_id;
-        $model->title                   = $record->title;
-        $model->unitContent             = $record->unit_content;
-        $model->sequence                = $record->sequence;
-
-        $model->createdAccountId        = $record->created_account_id;
-        $model->createdAccountLoginId   = $record->created_account_login_id;
-        $model->createdAccountName      = $record->created_account_name;
-        $model->createdDatetime         = $record->created_datetime;
-        $model->updatedAccountId        = $record->updated_account_id;
-        $model->updatedAccountLoginId   = $record->updated_account_login_id;
-        $model->updatedAccountName      = $record->updated_account_name;
-        $model->updatedDatetime         = $record->updated_datetime;
-        $model->recordVersion           = $record->record_version;
-        $model->isDeleted               = $record->is_deleted;
-
-        return $model;
-    }
-
-    public static function createFromRecordForEdit($record): AdminKnowledgeArticleContentUnitModel {
-        $model = new AdminKnowledgeArticleContentUnitModel();
-
-        $model->knowledgeArticleContentUnitId      = $record->knowledge_article_content_unit_id;
-        $model->title                   = $record->title;
-        $model->unitContent                 = $record->unit_content;
-        $model->sequence                = $record->sequence;
+        $model->knowledgeArticleImageContentUnitId      = $record->knowledge_article_image_content_unit_id;
+        $model->knowledgeArticleContentUnitId           = $record->knowledge_article_content_unit_id;
+        $model->imageSource                             = $record->image_source;
+        $model->imageTitle                              = $record->image_title;
+        $model->sequence                                = $record->sequence;
 
         $model->createdAccountId        = $record->created_account_id;
         $model->createdAccountLoginId   = $record->created_account_login_id;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticleCon
 
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitNewParam;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitUpdateParam;
+use App\Lib\Common\Type\DreamerTypeList;
 use Illuminate\Foundation\Http\FormRequest;
 
 class KnowledgeArticleContentUnitNewRequest extends FormRequest
@@ -42,6 +43,7 @@ class KnowledgeArticleContentUnitNewRequest extends FormRequest
         $newParam->setKnowledgeArticleId($this->knowledgeArticleId);
         $newParam->setTitle($this->title);
         $newParam->setUnitContent($this->unitContent);
+        $newParam->setImageList(new DreamerTypeList($this->imageList));
 
         return $newParam;
     }

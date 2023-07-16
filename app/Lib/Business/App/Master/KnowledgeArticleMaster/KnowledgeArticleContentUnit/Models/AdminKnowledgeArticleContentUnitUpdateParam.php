@@ -2,27 +2,18 @@
 
 namespace App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models;
 
+use App\Lib\Common\Type\DreamerTypeList;
+
 class AdminKnowledgeArticleContentUnitUpdateParam
 {
-    private ?int        $knowledgeArticleId = null;
+    private ?int        $knowledgeArticleContentUnitId = null;
 
     private string      $title;
 
-    /**
-     * @return int|null
-     */
-    public function getKnowledgeArticleId(): ?int
-    {
-        return $this->knowledgeArticleId;
-    }
+    private string      $unitContent;
 
-    /**
-     * @param int|null $knowledgeArticleId
-     */
-    public function setKnowledgeArticleId(?int $knowledgeArticleId): void
-    {
-        $this->knowledgeArticleId = $knowledgeArticleId;
-    }
+    private DreamerTypeList $imageList;
+
 
     /**
      * @return string
@@ -40,5 +31,52 @@ class AdminKnowledgeArticleContentUnitUpdateParam
         $this->title = $title;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getKnowledgeArticleContentUnitId(): ?int
+    {
+        return $this->knowledgeArticleContentUnitId;
+    }
+
+    /**
+     * @param int|null $knowledgeArticleContentUnitId
+     */
+    public function setKnowledgeArticleContentUnitId(?int $knowledgeArticleContentUnitId): void
+    {
+        $this->knowledgeArticleContentUnitId = $knowledgeArticleContentUnitId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnitContent(): string
+    {
+        return $this->unitContent;
+    }
+
+    /**
+     * @param string $unitContent
+     */
+    public function setUnitContent(string $unitContent): void
+    {
+        $this->unitContent = $unitContent;
+    }
+
+    /**
+     * @return DreamerTypeList
+     */
+    public function getImageList(): DreamerTypeList
+    {
+        return $this->imageList;
+    }
+
+    /**
+     * @param DreamerTypeList $imageList
+     */
+    public function setImageList(DreamerTypeList $imageList): void
+    {
+        $this->imageList = $imageList;
+    }
 
 }

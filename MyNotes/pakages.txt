@@ -41,4 +41,4 @@ Chạy project với Passport (Sau khi đã cài đặt)
             https://vinasupport.com/xac-thuc-authentication-voi-laravel-passport/
 
 ----------
-Debug Postman => form data XDEBUG_SESSION_START : PHPSTORM
+Debug Postman => form data XDEBUG_SESSION_START : PHPSTORM , &XDEBUG_SESSION_START=PHPSTORM

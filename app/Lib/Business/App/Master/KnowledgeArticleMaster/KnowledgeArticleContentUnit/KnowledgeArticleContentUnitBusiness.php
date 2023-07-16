@@ -21,6 +21,8 @@ use App\Lib\Common\Core\DataSource\Models\PageInfo;
 use App\Lib\Common\Type\DreamerTypeList;
 use App\Lib\WebCommon\Helpers\ResponseArrayModel;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class KnowledgeArticleContentUnitBusiness extends ExperienceBaseBusiness
 {
@@ -166,9 +168,9 @@ class KnowledgeArticleContentUnitBusiness extends ExperienceBaseBusiness
             );
         }
 
-        $knowledgeArticleId = $this->knowledgeArticleContentUnitEntity->updateKnowledgeArticleContentUnit($param);
+        $knowledgeArticleContentUnitId = $this->knowledgeArticleContentUnitEntity->updateKnowledgeArticleContentUnit($param);
 
-        return $knowledgeArticleId;
+        return $knowledgeArticleContentUnitId;
     }
 
     /**

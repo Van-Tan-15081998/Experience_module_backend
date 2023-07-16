@@ -7,6 +7,7 @@ use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models\A
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models\AdminKnowledgeArticlePaginationModel;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models\AdminKnowledgeArticleUpdateParam;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitModel;
+use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\KnowledgeArticleImageContentUnit\KnowledgeArticleImageContentUnitModel;
 use App\Lib\Business\Common\Exception\DreamerBusinessException;
 use App\Lib\Business\Common\Exception\DreamerExceptionConverter;
 use App\Lib\Business\Constants\DreamerCommonErrorCode;
@@ -194,12 +195,38 @@ class KnowledgeArticleEntity extends Model
 
         foreach($unitContentList as $unitContent) {
             $item = AdminKnowledgeArticleContentUnitModel::createFromRecord($unitContent);
+            $item->setImageList($this->selectKnowledgeArticleImageContentUnitByKnowledgeArticleContentUnitId($item->getKnowledgeArticleContentUnitId()));
+
             $unitContentListResult->add($item);
         }
 
         $adminKnowledgeArticle->setUnitContentList($unitContentListResult);
 
         return $adminKnowledgeArticle;
+    }
+
+    public function selectKnowledgeArticleImageContentUnitByKnowledgeArticleContentUnitId(int $knowledgeArticleContentUnitId) : DreamerTypeList
+    {
+        $result = new DreamerTypeList();
+
+        // Get images
+        $queryGetImages =
+            "SELECT *"
+            . " FROM kam__knowledge_article_image_content_units"
+            . " WHERE knowledge_article_content_unit_id = " . $knowledgeArticleContentUnitId
+            . " AND kam__knowledge_article_image_content_units.is_deleted = 0 ";
+
+        $imageQueryResult = DB::select($queryGetImages);
+
+        if (is_null($imageQueryResult) || empty($imageQueryResult)) {
+            return new DreamerTypeList();
+        }
+
+        foreach ($imageQueryResult as $image) {
+            $result->add(KnowledgeArticleImageContentUnitModel::createFromRecord($image));
+        }
+
+        return $result;
     }
 
     public function getEditKnowledgeArticleById(int $knowledgeArticleId): AdminKnowledgeArticleModel
