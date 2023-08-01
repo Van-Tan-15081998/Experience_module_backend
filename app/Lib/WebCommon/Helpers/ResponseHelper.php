@@ -97,12 +97,15 @@ class ResponseHelper
         ?string  $errCode,
         ?string  $errDescription = null,
         ?string  $errMessage = null,
-                 $optional = null                        ): Response
+                 $optional = null,
+        ?array   $debugInfo = null
+    ): Response
     {
         $error = ResponseStatus::createErrorStatus(   $errCode,
             $errDescription,
             $errMessage,
             $optional,
+            $debugInfo
         );
 
         $errors = new DreamerTypeList();
@@ -125,7 +128,8 @@ class ResponseHelper
             $status->getCode(),
             $status->getDescription(),
             $status->getMessage(),
-            $status->getOptional()
+            $status->getOptional(),
+            $status->getDebugInfo()
         );
     }
 }

@@ -19,6 +19,9 @@ return new class extends Migration
         Schema::create('kam__subjects', function (Blueprint $table) {
             $table->bigIncrements('subject_id');
             $table->string('title', 240)->default('');
+
+            $table->string('title_slug', 300)->default('');
+
             $table->tinyInteger('level')->default(1);
             $table->tinyInteger('sequence')->default(1);
 

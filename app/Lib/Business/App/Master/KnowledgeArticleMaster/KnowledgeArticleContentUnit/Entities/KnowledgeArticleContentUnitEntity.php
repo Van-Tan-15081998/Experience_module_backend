@@ -16,6 +16,38 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
+/**
+ *  Quy tắc
+ *  +   Các phương thức gọi từ Business: Phương thức Public
+ *      - get   :
+ *              -- getAll
+ *              -- getById
+ *              -- getPage
+ *      - do    :
+ *              -- doInsert
+ *              -- doUpdate
+ *              -- doDelete
+ *  +   Các phương thức thao tác trực tiếp với Database: Phương thức Private
+ *      - _select    (   =>  Sử dụng câu lệnh SQL thuần)        [ _selectAll , _selectById , _selectPage , ... ]
+ *      - _insert    (   =>  Sử dụng Query builder của Laravel) [ _insert , ... ]
+ *      - _update    (   =>  Sử dụng Query builder của Laravel) [ _update , ... ]
+ *      - _delete    (   =>  Sử dụng Query builder của Laravel) [ _delete , ... ]
+ *      - ...
+ *
+ *  +   Example:
+ *      public function getAll() {
+ *          $data = $this->_selectAll();
+ *          return $data;
+ *      }
+ *  +   Bookmarks
+ *      // TODO: [Bookmark] __________[ getAll ]__________</>
+ *      // TODO: [Bookmark] __________[ getById ]__________</>
+ *      // TODO: [Bookmark] __________[ getPage ]__________</>
+ *      // TODO: [Bookmark] __________[ doInsert ]__________</>
+ *      // TODO: [Bookmark] __________[ doUpdate ]__________</>
+ *      // TODO: [Bookmark] __________[ doDelete ]__________</>
+ */
+
 class KnowledgeArticleContentUnitEntity extends Model
 {
     use HasFactory;
@@ -25,6 +57,8 @@ class KnowledgeArticleContentUnitEntity extends Model
     protected $fillable = [
         'knowledge_article_content_unit_id',
         'title',
+        'title_slug',
+
         'content',
         'sequence',
 
@@ -193,6 +227,7 @@ class KnowledgeArticleContentUnitEntity extends Model
         $knowledgeArticleContentUnitId = DB::table('kam__knowledge_article_content_units')->insertGetId(
             [
                 'title'     => $param->getTitle(),
+                'title_slug' => DreamerStringUtil::toSlug($param->getTitle()),
                 'unit_content'   => $param->getUnitContent()
             ]
         );
@@ -208,7 +243,9 @@ class KnowledgeArticleContentUnitEntity extends Model
                 ]
             );
 
-            // insert images kam__knowledge_article_image_content_units
+            // TODO: UPLOAD_FILE
+            // TODO: Lưu ý lỗi: https://stackoverflow.com/questions/34009844/gd-library-extension-not-available-with-this-php-installation-ubuntu-nginx
+
             if($param->getImageList()->count() > 0) {
                 foreach ($param->getImageList()->getList() as $key => $image) {
                     if($image) {

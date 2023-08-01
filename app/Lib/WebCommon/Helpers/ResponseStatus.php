@@ -11,6 +11,7 @@ class ResponseStatus {
     private ?string $description = null;
     private ?string $message = null;
     private ?array $optional = null;
+    private ?array $debugInfo = null;
 
     public static function createSuccessfulStatus(MessageType $type, string $message): ResponseStatus
     {
@@ -35,7 +36,9 @@ class ResponseStatus {
     public static function createErrorStatus(   ?string  $code,
                                                 ?string  $description = null,
                                                 ?string  $message = null,
-                                                         $optional = null            ): ResponseStatus
+                                                         $optional = null,
+                                                array    $debugInfo = []
+    ): ResponseStatus
     {
         $instance = new ResponseStatus();
 
@@ -44,6 +47,7 @@ class ResponseStatus {
         $instance->description = $description;
         $instance->message = $message;
         $instance->optional = $optional;
+        $instance->debugInfo = $debugInfo;
 
         return $instance;
     }
@@ -81,6 +85,11 @@ class ResponseStatus {
     public function getOptional(): ?array
     {
         return $this->optional;
+    }
+
+    public function getDebugInfo(): ?array
+    {
+        return $this->debugInfo;
     }
 
     public function toArray(): array

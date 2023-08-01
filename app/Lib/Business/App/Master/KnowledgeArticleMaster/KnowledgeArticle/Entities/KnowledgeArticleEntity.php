@@ -15,9 +15,43 @@ use App\Lib\Common\Core\DataSource\Models\PageInfo;
 use App\Lib\Common\Core\DataSource\Models\PaginationInfo;
 use App\Lib\Common\Core\DataSource\Models\PaginationModel;
 use App\Lib\Common\Type\DreamerTypeList;
+use App\Lib\Common\Util\DreamerStringUtil;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+
+/**
+ *  Quy tắc
+ *  +   Các phương thức gọi từ Business: Phương thức Public
+ *      - get   :
+ *              -- getAll
+ *              -- getById
+ *              -- getPage
+ *      - do    :
+ *              -- doInsert
+ *              -- doUpdate
+ *              -- doDelete
+ *  +   Các phương thức thao tác trực tiếp với Database: Phương thức Private
+ *      - _select    (   =>  Sử dụng câu lệnh SQL thuần)        [ _selectAll , _selectById , _selectPage , ... ]
+ *      - _insert    (   =>  Sử dụng Query builder của Laravel) [ _insert , ... ]
+ *      - _update    (   =>  Sử dụng Query builder của Laravel) [ _update , ... ]
+ *      - _delete    (   =>  Sử dụng Query builder của Laravel) [ _delete , ... ]
+ *      - ...
+ *
+ *  +   Example:
+ *      public function getAll() {
+ *          $data = $this->_selectAll();
+ *          return $data;
+ *      }
+ *
+ *  +   Bookmarks
+ *      // TODO: [Bookmark] __________[ getAll ]__________</>
+ *      // TODO: [Bookmark] __________[ getById ]__________</>
+ *      // TODO: [Bookmark] __________[ getPage ]__________</>
+ *      // TODO: [Bookmark] __________[ doInsert ]__________</>
+ *      // TODO: [Bookmark] __________[ doUpdate ]__________</>
+ *      // TODO: [Bookmark] __________[ doDelete ]__________</>
+ */
 
 class KnowledgeArticleEntity extends Model
 {
@@ -28,6 +62,7 @@ class KnowledgeArticleEntity extends Model
     protected $fillable = [
         'knowledge_article_id',
         'title',
+        'title_slug',
 
         'created_account_id',
         'created_account_login_id',
@@ -143,12 +178,15 @@ class KnowledgeArticleEntity extends Model
         return $return;
     }
 
+
+    // TODO: [Bookmark] __________[ getById ]__________</>
+    //
     public function getById(int $subjectId): AdminKnowledgeArticleModel
     {
         $detail = null;
 
         try {
-            $detail = $this->selectById($subjectId);
+            $detail = $this->_selectById($subjectId);
 
 
         } catch (\Exception $e) {
@@ -163,7 +201,7 @@ class KnowledgeArticleEntity extends Model
         return $detail;
     }
 
-    public function selectById(int $knowledgeArticleId): ?AdminKnowledgeArticleModel
+    private function _selectById(int $knowledgeArticleId): ?AdminKnowledgeArticleModel
     {
         $query =
             "SELECT *"
@@ -195,7 +233,7 @@ class KnowledgeArticleEntity extends Model
 
         foreach($unitContentList as $unitContent) {
             $item = AdminKnowledgeArticleContentUnitModel::createFromRecord($unitContent);
-            $item->setImageList($this->selectKnowledgeArticleImageContentUnitByKnowledgeArticleContentUnitId($item->getKnowledgeArticleContentUnitId()));
+            $item->setImageList($this->_selectKnowledgeArticleImageContentUnitByKnowledgeArticleContentUnitId($item->getKnowledgeArticleContentUnitId()));
 
             $unitContentListResult->add($item);
         }
@@ -205,7 +243,7 @@ class KnowledgeArticleEntity extends Model
         return $adminKnowledgeArticle;
     }
 
-    public function selectKnowledgeArticleImageContentUnitByKnowledgeArticleContentUnitId(int $knowledgeArticleContentUnitId) : DreamerTypeList
+    private function _selectKnowledgeArticleImageContentUnitByKnowledgeArticleContentUnitId(int $knowledgeArticleContentUnitId) : DreamerTypeList
     {
         $result = new DreamerTypeList();
 
@@ -229,33 +267,32 @@ class KnowledgeArticleEntity extends Model
         return $result;
     }
 
+
+    // TODO: [Bookmark] __________[ getById ]__________</>
+    //
     public function getEditKnowledgeArticleById(int $knowledgeArticleId): AdminKnowledgeArticleModel
     {
         $detail = null;
 
         try {
-            $detail = $this->selectEditKnowledgeArticleById($knowledgeArticleId);
+            $detail = $this->_selectEditKnowledgeArticleById($knowledgeArticleId);
 
         } catch (\Exception $e) {
             DreamerExceptionConverter::convertException($e);
         }
 
         if(is_null($detail)) {
+            $debugInfo = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
+
             throw new DreamerBusinessException( DreamerCommonErrorCode::E00000000002()->getCode(),
-                DreamerCommonErrorCode::E00000000002()->getDescription());
+                DreamerCommonErrorCode::E00000000002()->getDescription(), null, debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1));
         }
 
         return $detail;
     }
 
-    public function selectEditKnowledgeArticleById(int $knowledgeArticleId): ?AdminKnowledgeArticleModel
+    private function _selectEditKnowledgeArticleById(int $knowledgeArticleId): ?AdminKnowledgeArticleModel
     {
-//        $query =
-//            "SELECT *"
-//            . " FROM kam__knowledge_articles"
-//            . " WHERE kam__knowledge_articles.knowledge_article_id = " . $knowledgeArticleId
-//            . " AND kam__knowledge_articles.is_deleted = 0 ";
-
         $query =
             "SELECT *"
             . " FROM kam__knowledge_articles"
@@ -273,11 +310,21 @@ class KnowledgeArticleEntity extends Model
         return $adminKnowledgeArticle;
     }
 
-    public function insertKnowledgeArticle(AdminKnowledgeArticleUpdateParam $param): int
+
+    // TODO: [Bookmark] __________[ doInsert ]__________</>
+    //
+    public function doInsert(AdminKnowledgeArticleUpdateParam $param) : int
+    {
+        return $this->_insert($param);
+    }
+
+    // insert knowledgeArticle
+    private function _insert(AdminKnowledgeArticleUpdateParam $param): int
     {
         $knowledgeArticleId = DB::table('kam__knowledge_articles')->insertGetId(
             [
                 'title'     => $param->getTitle(),
+                'title_slug' => DreamerStringUtil::toSlug($param->getTitle()),
             ]
         );
 
@@ -293,16 +340,39 @@ class KnowledgeArticleEntity extends Model
         return $knowledgeArticleId;
     }
 
-    public function updateKnowledgeArticle(AdminKnowledgeArticleUpdateParam $param): int
+
+    // TODO: [Bookmark] __________[ doUpdate ]__________</>
+    //
+    public function doUpdate(AdminKnowledgeArticleUpdateParam $param) : int {
+        return $this->_update($param);
+    }
+
+    // update knowledgeArticle
+    private function _update(AdminKnowledgeArticleUpdateParam $param): int
     {
-        /**
-         * Hàm update của Laravel (Query builder) sẽ trả về id của record vừa update thành công
-         **/
-        DB::table('kam__knowledge_articles')
-            ->where('knowledge_article_id', '=', $param->getKnowledgeArticleId())
-            ->update([
-                'title'     => $param->getTitle(),
-            ]);
+        try {
+            /**
+             * Hàm update của Laravel (Query builder) sẽ trả về id của record vừa update thành công
+             **/
+            DB::table('kam__knowledge_articles')
+                ->where('knowledge_article_id', '=', $param->getKnowledgeArticleId())
+                ->where('is_deleted', '=', 0)
+                ->update([
+                    'title'     => $param->getTitle(),
+                ]);
+
+        } catch (Exception $e) {
+            DreamerExceptionConverter::convertException($e);
+        }
+
+//        /**
+//         * Hàm update của Laravel (Query builder) sẽ trả về id của record vừa update thành công
+//         **/
+//        DB::table('kam__knowledge_articles')
+//            ->where('knowledge_article_id', '=', $param->getKnowledgeArticleId())
+//            ->update([
+//                'title'     => $param->getTitle(),
+//            ]);
 
         return $param->getKnowledgeArticleId();
     }

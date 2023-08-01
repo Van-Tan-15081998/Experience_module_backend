@@ -20,6 +20,8 @@ return new class extends Migration
             $table->bigIncrements('knowledge_article_id');
             $table->string('title', 240)->default('');
 
+            $table->string('title_slug', 300)->default('');
+
             $table->bigInteger('created_account_id')->default(0);
             $table->bigInteger('created_account_login_id')->default(0);
             $table->string('created_account_name',120)->default('');

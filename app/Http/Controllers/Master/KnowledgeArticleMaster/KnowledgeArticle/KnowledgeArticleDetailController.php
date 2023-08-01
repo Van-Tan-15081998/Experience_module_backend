@@ -243,7 +243,9 @@ class KnowledgeArticleDetailController extends KnowledgeArticleBaseController
                 $status = ResponseStatus::createErrorStatus(
                     $e->getExceptionCode(),
                     $e->getExceptionMessage(),
-                    'Không lấy được dữ liệu'
+                    'Không lấy được dữ liệu',
+                    null,
+                    $e->getExceptionDebugInfo()
                 );
 
                 $response = ResponseHelper::responseOnBusinessErrorFromStatus($status);

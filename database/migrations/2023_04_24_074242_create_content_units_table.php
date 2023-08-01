@@ -20,7 +20,11 @@ return new class extends Migration
         Schema::create('kam__knowledge_article_content_units', function (Blueprint $table) {
             $table->bigIncrements('knowledge_article_content_unit_id');
             $table->string('title', 240)->default('');
+
+            $table->string('title_slug', 300)->default('');
+
             $table->longText('unit_content')->default('');
+            $table->longText('unit_content_previous')->default(''); // Nhằm undo phiên bản kế trước sau khi đã update TODO: Need do
 
             $table->tinyInteger('sequence')->default(1);
 

@@ -14,9 +14,42 @@ use App\Lib\Common\Core\DataSource\Models\PageInfo;
 use App\Lib\Common\Core\DataSource\Models\PaginationInfo;
 use App\Lib\Common\Core\DataSource\Models\PaginationModel;
 use App\Lib\Common\Type\DreamerTypeList;
+use App\Lib\Common\Util\DreamerStringUtil;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+
+/**
+ *  Quy tắc
+ *  +   Các phương thức gọi từ Business: Phương thức Public
+ *      - get   :
+ *              -- getAll
+ *              -- getById
+ *              -- getPage
+ *      - do    :
+ *              -- doInsert
+ *              -- doUpdate
+ *              -- doDelete
+ *  +   Các phương thức thao tác trực tiếp với Database: Phương thức Private
+ *      - _select    (   =>  Sử dụng câu lệnh SQL thuần)        [ _selectAll , _selectById , _selectPage , ... ]
+ *      - _insert    (   =>  Sử dụng Query builder của Laravel) [ _insert , ... ]
+ *      - _update    (   =>  Sử dụng Query builder của Laravel) [ _update , ... ]
+ *      - _delete    (   =>  Sử dụng Query builder của Laravel) [ _delete , ... ]
+ *      - ...
+ *
+ *  +   Example:
+ *      public function getAll() {
+ *          $data = $this->_selectAll();
+ *          return $data;
+ *      }
+ *  +   Bookmarks
+ *      // TODO: [Bookmark] __________[ getAll ]__________</>
+ *      // TODO: [Bookmark] __________[ getById ]__________</>
+ *      // TODO: [Bookmark] __________[ getPage ]__________</>
+ *      // TODO: [Bookmark] __________[ doInsert ]__________</>
+ *      // TODO: [Bookmark] __________[ doUpdate ]__________</>
+ *      // TODO: [Bookmark] __________[ doDelete ]__________</>
+ */
 
 class SubjectEntity extends Model
 {
@@ -27,6 +60,7 @@ class SubjectEntity extends Model
     protected $fillable = [
         'subject_id',
         'title',
+        'title_slug',
         'level',
         'sequence',
 
@@ -230,6 +264,7 @@ class SubjectEntity extends Model
         $subjectId = DB::table('kam__subjects')->insertGetId(
             [
                 'title'     => $param->getTitle(),
+                'title_slug' => DreamerStringUtil::toSlug($param->getTitle()),
                 'level'     => $param->getLevel(),
                 'sequence'  => $param->getSequence(),
             ]
