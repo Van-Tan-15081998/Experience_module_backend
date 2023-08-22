@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    public function __construct()
+    {
+
+    }
+
     public function login(LoginFormRequest $request, AdminAuthenticationBusiness $adminAuthenticationBusiness) {
         $error = null;
         $errMessage = null;
@@ -26,8 +31,12 @@ class AuthController extends Controller
         }
     }
 
-    public function logout() {
+    public function logout(AdminAuthenticationBusiness $adminAuthenticationBusiness) {
+        try {
+            $adminAuthenticationBusiness->logout();
+        } catch(\Exception $e) {
 
+        }
     }
 
     public function authorizeUser() {

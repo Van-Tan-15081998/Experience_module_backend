@@ -11,6 +11,8 @@ class AdminKnowledgeArticleContentUnitUpdateParam
     private string      $title;
 
     private string      $unitContent;
+    private string      $unitContentRightSide;
+    private string      $unitContentLeftSide;
 
     private DreamerTypeList $imageList;
 
@@ -61,6 +63,38 @@ class AdminKnowledgeArticleContentUnitUpdateParam
     public function setUnitContent(string $unitContent): void
     {
         $this->unitContent = $unitContent;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnitContentRightSide(): string
+    {
+        return $this->unitContentRightSide;
+    }
+
+    /**
+     * @param string $unitContentRightSide
+     */
+    public function setUnitContentRightSide(string $unitContentRightSide): void
+    {
+        $this->unitContentRightSide = $unitContentRightSide;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnitContentLeftSide(): string
+    {
+        return $this->unitContentLeftSide;
+    }
+
+    /**
+     * @param string $unitContentLeftSide
+     */
+    public function setUnitContentLeftSide(string $unitContentLeftSide): void
+    {
+        $this->unitContentLeftSide = $unitContentLeftSide;
     }
 
     /**

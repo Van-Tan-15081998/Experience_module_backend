@@ -6,6 +6,14 @@ use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUn
 use App\Lib\Common\Type\DreamerTypeList;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property mixed $imageList
+ * @property mixed $unitContentLeftSide
+ * @property mixed $unitContentRightSide
+ * @property mixed $unitContent
+ * @property mixed $title
+ * @property mixed $knowledgeArticleContentUnitId
+ */
 class KnowledgeArticleContentUnitUpdateRequest extends FormRequest
 {
     public function authorize(): bool
@@ -13,24 +21,20 @@ class KnowledgeArticleContentUnitUpdateRequest extends FormRequest
         return true;
     }
 
-    public function rules()
+    public function rules(): array
     {
-        $rules = [
+        return [
             'title' => 'required|max:255',
             'unitContent' => 'required',
         ];
-
-        return $rules;
     }
 
     public function messages(): array
     {
-        $messages = [
+        return [
             'title.required'            => 'Tiêu đề Unit là bắt buộc',
             'unitContent.required'            => 'Nội dung của Unit là bắt buộc',
         ];
-
-        return $messages;
     }
 
     public function getUpdateParam(): AdminKnowledgeArticleContentUnitUpdateParam
@@ -39,7 +43,11 @@ class KnowledgeArticleContentUnitUpdateRequest extends FormRequest
 
         $updateParam->setKnowledgeArticleContentUnitId($this->knowledgeArticleContentUnitId);
         $updateParam->setTitle($this->title);
+
         $updateParam->setUnitContent($this->unitContent);
+        $updateParam->setUnitContentRightSide($this->unitContentRightSide);
+        $updateParam->setUnitContentLeftSide($this->unitContentLeftSide);
+
         $updateParam->setImageList(new DreamerTypeList($this->imageList));
 
         return $updateParam;

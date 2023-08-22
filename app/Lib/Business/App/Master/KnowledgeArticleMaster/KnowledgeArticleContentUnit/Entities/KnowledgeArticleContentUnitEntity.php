@@ -59,7 +59,14 @@ class KnowledgeArticleContentUnitEntity extends Model
         'title',
         'title_slug',
 
-        'content',
+        'unit_content',
+        'unit_content_right_side',
+        'unit_content_left_side',
+
+        'unit_content_previous',
+        'unit_content_right_side_previous',
+        'unit_content_left_side_previous',
+
         'sequence',
 
         'created_account_id',
@@ -226,9 +233,11 @@ class KnowledgeArticleContentUnitEntity extends Model
     {
         $knowledgeArticleContentUnitId = DB::table('kam__knowledge_article_content_units')->insertGetId(
             [
-                'title'     => $param->getTitle(),
-                'title_slug' => DreamerStringUtil::toSlug($param->getTitle()),
-                'unit_content'   => $param->getUnitContent()
+                'title'                     => $param->getTitle(),
+                'title_slug'                => DreamerStringUtil::toSlug($param->getTitle()),
+                'unit_content'              => $param->getUnitContent(),
+                'unit_content_right_side'   => $param->getUnitContentRightSide(),
+                'unit_content_left_side'    => $param->getUnitContentLeftSide(),
             ]
         );
 
@@ -317,7 +326,9 @@ class KnowledgeArticleContentUnitEntity extends Model
             ->where('knowledge_article_content_unit_id', '=', $param->getKnowledgeArticleContentUnitId())
             ->update([
                 'title'     => $param->getTitle(),
-                'unit_content' => $param->getUnitContent()
+                'unit_content' => $param->getUnitContent(),
+                'unit_content_right_side' => $param->getUnitContentRightSide(),
+                'unit_content_left_side' => $param->getUnitContentLeftSide()
             ]);
 
         return $param->getKnowledgeArticleContentUnitId();

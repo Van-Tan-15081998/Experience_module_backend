@@ -8,6 +8,7 @@ use App\Lib\Business\Authentication\StaffAccount\Models\AuthUser;
 use Illuminate\Support\Facades\App;
 use App\Lib\Business\Authentication\StaffAccount\StaffAuthenticationBusiness;
 use App\Lib\Business\Base\ExperienceBaseBusiness;
+use Illuminate\Support\Facades\Auth;
 
 class AdminAuthenticationBusiness extends ExperienceBaseBusiness
 {
@@ -43,10 +44,17 @@ class AdminAuthenticationBusiness extends ExperienceBaseBusiness
         return $loggedIn;
     }
 
-    public function logout()
+    public function logout(): bool
     {
         $auth = auth();
-        $auth->user()->currentAccessToken()->delete();
+
+        if($auth) {
+            $user = $auth->user();
+            $user->token()->revoke();
+            return true;
+        }
+
+        return false;
     }
 
     public function authorize(): AuthUser

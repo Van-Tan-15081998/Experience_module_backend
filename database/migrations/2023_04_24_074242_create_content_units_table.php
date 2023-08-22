@@ -26,6 +26,12 @@ return new class extends Migration
             $table->longText('unit_content')->default('');
             $table->longText('unit_content_previous')->default(''); // Nhằm undo phiên bản kế trước sau khi đã update TODO: Need do
 
+            $table->longText('unit_content_right_side')->default('');
+            $table->longText('unit_content_right_side_previous')->default(''); // Nhằm undo phiên bản kế trước sau khi đã update TODO: Need do
+
+            $table->longText('unit_content_left_side')->default('');
+            $table->longText('unit_content_left_side_previous')->default(''); // Nhằm undo phiên bản kế trước sau khi đã update TODO: Need do
+
             $table->tinyInteger('sequence')->default(1);
 
             $table->bigInteger('created_account_id')->default(0);

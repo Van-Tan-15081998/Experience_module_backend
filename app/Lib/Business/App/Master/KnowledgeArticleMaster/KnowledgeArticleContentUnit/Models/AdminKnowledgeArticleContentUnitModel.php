@@ -9,7 +9,11 @@ class AdminKnowledgeArticleContentUnitModel extends DreamerTypeObject
 {
     private int             $knowledgeArticleContentUnitId;
     private string          $title;
+
     private string          $unitContent;
+    private string          $unitContentRightSide;
+    private string          $unitContentLeftSide;
+
     private int             $sequence;
 
     private DreamerTypeList $imageList;
@@ -265,10 +269,46 @@ class AdminKnowledgeArticleContentUnitModel extends DreamerTypeObject
         $this->imageList = $imageList;
     }
 
+    /**
+     * @return string
+     */
+    public function getUnitContentRightSide(): string
+    {
+        return $this->unitContentRightSide;
+    }
+
+    /**
+     * @param string $unitContentRightSide
+     */
+    public function setUnitContentRightSide(string $unitContentRightSide): void
+    {
+        $this->unitContentRightSide = $unitContentRightSide;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnitContentLeftSide(): string
+    {
+        return $this->unitContentLeftSide;
+    }
+
+    /**
+     * @param string $unitContentLeftSide
+     */
+    public function setUnitContentLeftSide(string $unitContentLeftSide): void
+    {
+        $this->unitContentLeftSide = $unitContentLeftSide;
+    }
+
     public function init(): void
     {
         $this->title                   = 'Title mẫu nha';
+
         $this->unitContent             = 'Content mẫu nha';
+        $this->unitContentRightSide             = 'Content mẫu nha';
+        $this->unitContentLeftSide             = 'Content mẫu nha';
+
         $this->sequence                = 1;
 
         $this->createdAccountId        = null;
@@ -288,7 +328,11 @@ class AdminKnowledgeArticleContentUnitModel extends DreamerTypeObject
 
         $model->knowledgeArticleContentUnitId      = $record->knowledge_article_content_unit_id;
         $model->title                   = $record->title;
+
         $model->unitContent             = $record->unit_content;
+        $model->unitContentRightSide             = $record->unit_content_right_side;
+        $model->unitContentLeftSide             = $record->unit_content_left_side;
+
         $model->sequence                = $record->sequence;
 
         $model->createdAccountId        = $record->created_account_id;
@@ -310,7 +354,11 @@ class AdminKnowledgeArticleContentUnitModel extends DreamerTypeObject
 
         $model->knowledgeArticleContentUnitId      = $record->knowledge_article_content_unit_id;
         $model->title                   = $record->title;
+
         $model->unitContent                 = $record->unit_content;
+        $model->unitContentRightSide             = $record->unit_content_right_side;
+        $model->unitContentLeftSide             = $record->unit_content_left_side;
+
         $model->sequence                = $record->sequence;
 
         $model->createdAccountId        = $record->created_account_id;
@@ -330,8 +378,6 @@ class AdminKnowledgeArticleContentUnitModel extends DreamerTypeObject
     public function toArray(): array
     {
         $target = get_object_vars($this);
-        $arrayResult = parent::toArrayFromModel($target);
-
-        return $arrayResult;
+        return parent::toArrayFromModel($target);
     }
 }

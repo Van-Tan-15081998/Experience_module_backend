@@ -3,7 +3,8 @@
 namespace App\Traits;
 
 trait SystemResponse {
-    private function sentResponse($errorCode, $errorMessage, $data) {
+    private function sentResponse($errorCode, $errorMessage, $data) : array
+    {
         return [
             'error_code'    =>  $errorCode,
             'error_msg'     =>  $errorMessage,

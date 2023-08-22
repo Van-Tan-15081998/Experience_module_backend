@@ -98,7 +98,7 @@ class ResponseHelper
         ?string  $errDescription = null,
         ?string  $errMessage = null,
                  $optional = null,
-        ?array   $debugInfo = null
+        ?array   $debugInfo = []
     ): Response
     {
         $error = ResponseStatus::createErrorStatus(   $errCode,
