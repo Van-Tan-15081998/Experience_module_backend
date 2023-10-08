@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Base\KnowledgeArticleMaster\MasterSearch\MasterSearchBaseController;
 use App\Http\Controllers\Master\FavoriteApp\Book\BookDetailController;
 use App\Http\Controllers\Master\FavoriteApp\Book\BookListController;
 use App\Http\Controllers\Master\FavoriteApp\Knowledge\KnowledgeController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticle\Knowledg
 use App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticle\KnowledgeArticleListController;
 use App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\KnowledgeArticleContentUnitDetailController;
 use App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\KnowledgeArticleContentUnitListController;
+use App\Http\Controllers\Master\KnowledgeArticleMaster\MasterSearch\MasterSearchController;
 use App\Http\Controllers\Master\KnowledgeArticleMaster\Subject\SubjectDetailController;
 use App\Http\Controllers\Master\KnowledgeArticleMaster\Subject\SubjectListController;
 use Illuminate\Http\Request;
@@ -74,6 +76,8 @@ Route::group(
 
         Route::post('/master/knowledge_article_master/subject/detail/register', [SubjectDetailController::class, 'register']);
         Route::post('/master/knowledge_article_master/subject/detail/update', [SubjectDetailController::class, 'update']);
+
+        Route::get('/master/knowledge_article_master/master_search', [MasterSearchController::class, 'search']);
 
 
         Route::get('/master/knowledge_article_master/knowledge_article/list', [KnowledgeArticleListController::class, 'initDisplay']);

@@ -18,6 +18,8 @@ class AdminPageType extends Enum
     public const MASTER_KNOWLEDGE_ARTICLE_CONTENT_UNIT_LIST = [80000007];
     public const MASTER_KNOWLEDGE_ARTICLE_CONTENT_UNIT_DETAIL = [80000008];
 
+    public const MASTER_KNOWLEDGE_ARTICLE_MASTER_SEARCH = [80000009];
+
     public function getId(): int
     {
         return $this->value[0];

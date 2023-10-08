@@ -98,7 +98,7 @@ class AdminCommonBusiness
         }
 
         $screen->setMenuGroup(null);
-        if(isset($menuGroupList)) {
+        if(isset($menuGroupList) && $menuGroupList instanceof DreamerTypeList) {
             $menu = $this->findMenuGroup($menuGroupList, $breadcrumbPageId);
             if(isset($menu)) {
                 $screen->setMenuGroup($menu);
