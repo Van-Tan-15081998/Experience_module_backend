@@ -36,6 +36,11 @@ class MasterRole extends Seeder
                 'role_id'       => 4,
                 'name'          => 'Knowledge Article Content Unit Role Master',
                 'sequence'      => 0
+            ],
+            [
+                'role_id'       => 5,
+                'name'          => 'Tag Role Master',
+                'sequence'      => 0
             ]
         ]);
     }

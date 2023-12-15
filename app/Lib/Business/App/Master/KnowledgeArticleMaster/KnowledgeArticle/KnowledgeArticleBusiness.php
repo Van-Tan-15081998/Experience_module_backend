@@ -61,6 +61,10 @@ class KnowledgeArticleBusiness extends ExperienceBaseBusiness
             return $detail;
         }
 
+        // Set Tag List
+        $tagList = $this->getTagListByKnowledgeArticleId($detail->getKnowledgeArticleId());
+        $detail->setTagList($tagList);
+
         return $detail;
     }
 
@@ -178,6 +182,11 @@ class KnowledgeArticleBusiness extends ExperienceBaseBusiness
         $selectionItems = new ResponseArrayModel();
         $isExistEmptyList = false;
 
+        // Get Tag list
+        $tagList = $this->getTagList();
+
+        $selectionItems->addResponseItem('tagList', $tagList);
+
         $result = new ResponseArrayModel();
         $result->addResponseItem('searchItems', $selectionItems);
         $result->addResponseItem('isExistsEmptyList', $isExistEmptyList);
@@ -190,9 +199,29 @@ class KnowledgeArticleBusiness extends ExperienceBaseBusiness
         $selectionItems = new ResponseArrayModel();
         $isExistEmptyList = false;
 
+        // Get Tag list
+        $tagList = $this->getTagList();
+
+        $selectionItems->addResponseItem('tagList', $tagList);
+
         $result = new ResponseArrayModel();
         $result->addResponseItem('searchItems', $selectionItems);
         $result->addResponseItem('isExistsEmptyList', $isExistEmptyList);
+
+        return $result;
+    }
+
+    public function getTagList(): DreamerTypeList
+    {
+        $result = null;
+
+        try {
+
+            $result = $this->knowledgeArticleEntity->getTagList();
+
+        } catch (\Exception $e) {
+            DreamerExceptionConverter::convertException($e);
+        }
 
         return $result;
     }
@@ -221,6 +250,21 @@ class KnowledgeArticleBusiness extends ExperienceBaseBusiness
         try {
 
             $result = $this->knowledgeArticleEntity->getKnowledgeArticleListBySubjectId();
+
+        } catch (\Exception $e) {
+            DreamerExceptionConverter::convertException($e);
+        }
+
+        return $result;
+    }
+
+    public function getTagListByKnowledgeArticleId(int $knowledgeArticleId): DreamerTypeList
+    {
+        $result = null;
+
+        try {
+
+            $result = $this->knowledgeArticleEntity->getTagListByKnowledgeArticleId($knowledgeArticleId);
 
         } catch (\Exception $e) {
             DreamerExceptionConverter::convertException($e);

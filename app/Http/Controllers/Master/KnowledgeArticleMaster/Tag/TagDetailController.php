@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Master\KnowledgeArticleMaster\Subject;
+namespace App\Http\Controllers\Master\KnowledgeArticleMaster\Tag;
 
 use App\Constants\AdminPageType;
 use App\Constants\DetailsAction;
-use App\Http\Controllers\Base\KnowledgeArticleMaster\Subject\Model\SubjectScreenRoleModel;
-use App\Http\Controllers\Base\KnowledgeArticleMaster\Subject\SubjectBaseController;
-use App\Http\Controllers\Base\Model\ScreenRoleModel;
-use App\Lib\Business\App\Master\KnowledgeArticleMaster\Subject\SubjectBusiness;
+use App\Http\Controllers\Base\KnowledgeArticleMaster\Tag\Model\TagScreenRoleModel;
+use App\Http\Controllers\Base\KnowledgeArticleMaster\Tag\TagBaseController;
+use App\Lib\Business\App\Master\KnowledgeArticleMaster\Tag\TagBusiness;
 use App\Lib\Business\Common\Exception\DreamerBusinessException;
 use App\Lib\Business\Common\Exception\DreamerInvalidParameterException;
 use App\Lib\Business\Constants\DreamerCommonErrorCode;
 use App\Lib\Business\Specific\Staff\AccountRole\Models\RoleFunctionListModel;
 use App\Lib\Business\Specific\Staff\AccountRole\Models\RoleFunctionModel;
+use App\Http\Controllers\Base\Model\ScreenRoleModel;
 use App\Lib\Common\Type\DreamerTypeList;
 use App\Lib\Common\Type\DreamerTypeObject;
 use App\Lib\Common\Util\DreamerNumberUtil;
@@ -25,20 +25,20 @@ use App\Util\ResponseStatusHelper;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class SubjectDetailController extends SubjectBaseController
+class TagDetailController extends TagBaseController
 {
-    private SubjectBusiness $subjectBusiness;
+    private TagBusiness $tagBusiness;
 
     public function __construct()
     {
         parent::__construct();
-        $this->subjectBusiness = new SubjectBusiness();
+        $this->tagBusiness = new TagBusiness();
     }
 
     protected function createScreenRole(int $screenId, ?array $screenOptional, RoleFunctionModel $role, RoleFunctionListModel $relatedScreenRoleList): ?ScreenRoleModel
     {
         // TODO: Implement createScreenRole() method.
-        $screenRole = new AdminSubjectScreenRoleModel();
+        $screenRole = new AdminTagScreenRoleModel();
 
         $screenRole->setIsBrowse($role->isBrowse());
 
@@ -93,14 +93,14 @@ class SubjectDetailController extends SubjectBaseController
         ];
 
         $role = $this->getMyRole($screenOptional);
-        $subjectId = (int)$request->subjectId;
+        $tagId = (int)$request->tagId;
 
         if(!$role->isBrowse()) {
 
             $status = ResponseStatusHelper::createUnauthorized(true);
         } else {
 
-            $resultArray = $this->getInitialDisplayData($subjectId, $mode, $role);
+            $resultArray = $this->getInitialDisplayData($tagId, $mode, $role);
 
             $data = $resultArray['data'];
             $status = $resultArray['status'];
@@ -109,7 +109,7 @@ class SubjectDetailController extends SubjectBaseController
         return $this->responseOnSuccessfulWithCommonFields($data, $status, $screenOptional);
     }
 
-    public function register(SubjectUpdateRequest $request): Response
+    public function register(TagUpdateRequest $request): Response
     {
         $mode = DetailsAction::NEW();
         $screenOptional = [
@@ -134,7 +134,7 @@ class SubjectDetailController extends SubjectBaseController
         // Quá trình thêm mới
         try {
 
-            $subjectId = $this->subjectBusiness->add($request);
+            $tagId = $this->tagBusiness->add($request);
 
             $isSucceeded = true;
 
@@ -150,7 +150,7 @@ class SubjectDetailController extends SubjectBaseController
         if($isSucceeded) {
             try {
 
-                $saveData = $this->subjectBusiness->getById(DetailsAction::EDIT(), $subjectId);
+                $saveData = $this->tagBusiness->getById(DetailsAction::EDIT(), $tagId);
                 $responseItems->addResponseItem('data', $saveData);
 
                 $isSucceeded = true;
@@ -185,7 +185,7 @@ class SubjectDetailController extends SubjectBaseController
         return $response;
     }
 
-    public function update(SubjectUpdateRequest $request): Response
+    public function update(TagUpdateRequest $request): Response
     {
         if(!$this->validateUpdateParams($request)) {
             throw new DreamerInvalidParameterException();
@@ -199,7 +199,7 @@ class SubjectDetailController extends SubjectBaseController
 
         $role = $this->getMyRole($screenOptional);
 
-        $subjectId = (int)$request->subjectId;
+        $tagId = (int)$request->tagId;
 
         if(!$role->isEdit()) {
             // Không được phép / Không có quyền
@@ -217,7 +217,7 @@ class SubjectDetailController extends SubjectBaseController
         // Quá trình cập nhật
         try {
 
-            $subjectId = $this->subjectBusiness->update($request);
+            $tagId = $this->tagBusiness->update($request);
 
             $isSucceeded = true;
 
@@ -233,7 +233,7 @@ class SubjectDetailController extends SubjectBaseController
         if($isSucceeded) {
             try {
 
-                $saveData = $this->subjectBusiness->getById(DetailsAction::EDIT(), $subjectId);
+                $saveData = $this->tagBusiness->getById(DetailsAction::EDIT(), $tagId);
                 $responseItems->addResponseItem('data', $saveData);
 
                 $isSucceeded = true;
@@ -268,7 +268,7 @@ class SubjectDetailController extends SubjectBaseController
         return $response;
     }
 
-    public function delete(SubjectUpdateRequest $request): Response
+    public function delete(TagUpdateRequest $request): Response
     {
         if(!$this->validateUpdateParams($request)) {
             throw new DreamerInvalidParameterException();
@@ -282,7 +282,7 @@ class SubjectDetailController extends SubjectBaseController
 
         $role = $this->getMyRole($screenOptional);
 
-        $subjectId = (int)$request->subjectId;
+        $tagId = (int)$request->tagId;
 
         if(!$role->isEdit()) {
             // Không được phép / Không có quyền
@@ -300,7 +300,7 @@ class SubjectDetailController extends SubjectBaseController
         // Quá trình cập nhật
         try {
 
-            $subjectId = $this->subjectBusiness->delete($request);
+            $tagId = $this->tagBusiness->delete($request);
 
             $isSucceeded = true;
 
@@ -333,12 +333,12 @@ class SubjectDetailController extends SubjectBaseController
 //
 //    }
 
-    private function getMyRole(array $screenOptional=null): SubjectScreenRoleModel
+    private function getMyRole(array $screenOptional=null): TagScreenRoleModel
     {
-        return parent::getSubjectRole(AdminPageType::MASTER_KNOWLEDGE_ARTICLE_SUBJECT_DETAIL(), $screenOptional);
+        return parent::getTagRole(AdminPageType::MASTER_KNOWLEDGE_ARTICLE_TAG_DETAIL(), $screenOptional);
     }
 
-    private function getInitialDisplayData(int $subjectId, string $mode, SubjectScreenRoleModel $role): array
+    private function getInitialDisplayData(int $tagId, string $mode, TagScreenRoleModel $role): array
     {
         $data = new ResponseArrayModel();
         $status = null;
@@ -348,9 +348,9 @@ class SubjectDetailController extends SubjectBaseController
 
         try {
 
-            $adminSubject = $this->subjectBusiness->getById(DetailsAction::fromKey($mode), $subjectId);
+            $adminTag = $this->tagBusiness->getById(DetailsAction::fromKey($mode), $tagId);
 
-            $data->addResponseItem('data', $adminSubject);
+            $data->addResponseItem('data', $adminTag);
 
             $isSucceeded = true;
 
@@ -365,25 +365,11 @@ class SubjectDetailController extends SubjectBaseController
                 try {
                     $selectionItems = new ResponseArrayModel();
 
-                    if(DetailsAction::EDIT()->isSame($mode)) {
-                        $selectionItems = $this->subjectBusiness->getEditSelectionItems($adminSubject);
-                    } else if(DetailsAction::NEW()->isSame($mode)) {
-                        // Với mode = new, sẽ lấy toàn bộ chủ đề cũng như bài viết
-                        $selectionItems = $this->subjectBusiness->getNewSelectionItems($adminSubject);
-                    }
+                    $selectionItems = $this->tagBusiness->getEditSelectionItems($adminTag);
 
                     $selectionItems = $selectionItems->toArray();
 
-                    // Nếu có bất cứ một item nào trong list là rỗng thì báo lỗi
-                    if ($selectionItems['isExistsEmptyList']) {
-                        $status = ResponseStatus::createSuccessfulStatus(
-                            MessageType::ERROR(),
-                            __('admin_common_message.common_err_noMasterData_00-03-000004')
-                        );
-                    }
-
-                    $data->addResponseItem('selectionItems', $selectionItems['searchItems']);
-
+                    $data->addResponseItem('selectionItems', $selectionItems['defaultTagColorList']);
                 } catch (DreamerBusinessException $e) {
 
                     $status = ResponseStatus::createErrorStatus(
@@ -407,8 +393,8 @@ class SubjectDetailController extends SubjectBaseController
                                                             array $screenOptional=null      ): Response
     {
         return $this->apiResponseWithCommonFields(
-            AdminPageType::MASTER_KNOWLEDGE_ARTICLE_SUBJECT_DETAIL(),
-            AdminPageType::MASTER_KNOWLEDGE_ARTICLE_SUBJECT_LIST(),
+            AdminPageType::MASTER_KNOWLEDGE_ARTICLE_TAG_DETAIL(),
+            AdminPageType::MASTER_KNOWLEDGE_ARTICLE_TAG_LIST(),
             $data,
             ResponseStatusHelper::toList($status),
             $screenOptional
@@ -453,9 +439,9 @@ class SubjectDetailController extends SubjectBaseController
         return $this->apiResponseSimple($data, $status, $screenOptional);
     }
 
-    private function validateUpdateParams(SubjectUpdateRequest $request): bool
+    private function validateUpdateParams(TagUpdateRequest $request): bool
     {
-        if (!DreamerNumberUtil::isInt($request->subjectId)) {
+        if (!DreamerNumberUtil::isInt($request->tagId)) {
             return false;
         }
 

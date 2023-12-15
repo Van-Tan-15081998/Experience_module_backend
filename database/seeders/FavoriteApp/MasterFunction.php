@@ -82,12 +82,30 @@ class MasterFunction extends Seeder
             ],
             [
                 'function_id'           => 8,
-                'parent_function_id'    => 5,
+                'parent_function_id'    => 7,
                 'name'                  => 'Knowledge Article Content Unit Detail - Function',
                 'screen_name'           => 'Knowledge Article Content Unit Detail',
                 'screen_id'             => '80000008',
                 'sequence'              => 1
-            ]
+            ],
+
+            // Tag
+            [
+                'function_id'           => 9,
+                'parent_function_id'    => 0,
+                'name'                  => 'Tag List - Function',
+                'screen_name'           => 'Tag List',
+                'screen_id'             => '80000010',
+                'sequence'              => 1
+            ],
+            [
+                'function_id'           => 10,
+                'parent_function_id'    => 9,
+                'name'                  => 'Tag Detail - Function',
+                'screen_name'           => 'Tag Detail',
+                'screen_id'             => '80000011',
+                'sequence'              => 1
+            ],
 
         ]);
     }

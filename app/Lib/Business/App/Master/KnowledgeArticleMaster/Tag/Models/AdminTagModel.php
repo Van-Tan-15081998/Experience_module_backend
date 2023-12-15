@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models;
+namespace App\Lib\Business\App\Master\KnowledgeArticleMaster\Tag\Models;
 
-use App\Lib\Common\Type\DreamerTypeList;
 use App\Lib\Common\Type\DreamerTypeObject;
 
-class AdminKnowledgeArticleModel extends DreamerTypeObject
+class AdminTagModel  extends DreamerTypeObject
 {
-    private int             $knowledgeArticleId;
+    private int             $tagId;
     private string          $title;
+    private string          $color;
+    private int             $level;
+    private int             $sequence;
 
-//    private int             $subjectId;
-
-    private DreamerTypeList $unitContentList;
-    private DreamerTypeList $tagList;
+    // Id bảng trung gian khi lấy tag list
+    private int             $tagKnowledgeArticleId;
 
     private ?int            $createdAccountId;
     private ?int            $createdAccountLoginId;
@@ -29,17 +29,17 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
     /**
      * @return int
      */
-    public function getKnowledgeArticleId(): int
+    public function getTagId(): int
     {
-        return $this->knowledgeArticleId;
+        return $this->tagId;
     }
 
     /**
-     * @param int $knowledgeArticleId
+     * @param int $tagId
      */
-    public function setKnowledgeArticleId(int $knowledgeArticleId): void
+    public function setTagId(int $tagId): void
     {
-        $this->knowledgeArticleId = $knowledgeArticleId;
+        $this->tagId = $tagId;
     }
 
     /**
@@ -59,38 +59,52 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
     }
 
     /**
-     * @return DreamerTypeList
+     * @return string
      */
-    public function getUnitContentList(): DreamerTypeList
+    public function getColor(): string
     {
-        return $this->unitContentList;
+        return $this->color;
     }
 
     /**
-     * @param DreamerTypeList $unitContentList
+     * @param string $color
      */
-    public function setUnitContentList(DreamerTypeList $unitContentList): void
+    public function setColor(string $color): void
     {
-        $this->unitContentList = $unitContentList;
+        $this->color = $color;
     }
 
-//    /**
-//     * @return int
-//     */
-//    public function getSubjectId(): int
-//    {
-//        return $this->subjectId;
-//    }
-//
-//    /**
-//     * @param int $subjectId
-//     */
-//    public function setSubjectId(int $subjectId): void
-//    {
-//        $this->subjectId = $subjectId;
-//    }
+    /**
+     * @return int
+     */
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
 
+    /**
+     * @param int $level
+     */
+    public function setLevel(int $level): void
+    {
+        $this->level = $level;
+    }
 
+    /**
+     * @return int
+     */
+    public function getSequence(): int
+    {
+        return $this->sequence;
+    }
+
+    /**
+     * @param int $sequence
+     */
+    public function setSequence(int $sequence): void
+    {
+        $this->sequence = $sequence;
+    }
 
     /**
      * @return int|null
@@ -253,24 +267,27 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
     }
 
     /**
-     * @return DreamerTypeList
+     * @return int
      */
-    public function getTagList(): DreamerTypeList
+    public function getTagKnowledgeArticleId(): int
     {
-        return $this->tagList;
+        return $this->tagKnowledgeArticleId;
     }
 
     /**
-     * @param DreamerTypeList $tagList
+     * @param int $tagKnowledgeArticleId
      */
-    public function setTagList(DreamerTypeList $tagList): void
+    public function setTagKnowledgeArticleId(int $tagKnowledgeArticleId): void
     {
-        $this->tagList = $tagList;
+        $this->tagKnowledgeArticleId = $tagKnowledgeArticleId;
     }
 
     public function init(): void
     {
         $this->title                   = 'Title mẫu nha';
+        $this->color                    = '';
+        $this->level                    = 1;
+        $this->sequence                 = 1;
 
         $this->createdAccountId        = null;
         $this->createdAccountLoginId   = null;
@@ -284,13 +301,14 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
         $this->isDeleted               = null;
     }
 
-    public static function createFromRecord($record): AdminKnowledgeArticleModel {
-        $model = new AdminKnowledgeArticleModel();
+    public static function createFromRecord($record): AdminTagModel {
+        $model = new AdminTagModel();
 
-        $model->knowledgeArticleId      = $record->knowledge_article_id;
+        $model->tagId               = $record->tag_id;
         $model->title                   = $record->title;
-
-//        $model->subjectId               = $record->subject_id;
+        $model->color                   = $record->color;
+        $model->level                   = $record->level;
+        $model->sequence                = $record->sequence;
 
         $model->createdAccountId        = $record->created_account_id;
         $model->createdAccountLoginId   = $record->created_account_login_id;
@@ -306,13 +324,39 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
         return $model;
     }
 
-    public static function createFromRecordForEdit($record): AdminKnowledgeArticleModel {
-        $model = new AdminKnowledgeArticleModel();
+    public static function createFromRecordForEdit($record): AdminTagModel {
+        $model = new AdminTagModel();
 
-        $model->knowledgeArticleId      = $record->knowledge_article_id;
+        $model->tagId               = $record->tag_id;
         $model->title                   = $record->title;
+        $model->color                   = $record->color;
+        $model->level                   = $record->level;
+        $model->sequence                = $record->sequence;
 
-//        $model->subjectId               = $record->subject_id;
+        $model->createdAccountId        = $record->created_account_id;
+        $model->createdAccountLoginId   = $record->created_account_login_id;
+        $model->createdAccountName      = $record->created_account_name;
+        $model->createdDatetime         = $record->created_datetime;
+        $model->updatedAccountId        = $record->updated_account_id;
+        $model->updatedAccountLoginId   = $record->updated_account_login_id;
+        $model->updatedAccountName      = $record->updated_account_name;
+        $model->updatedDatetime         = $record->updated_datetime;
+        $model->recordVersion           = $record->record_version;
+        $model->isDeleted               = $record->is_deleted;
+
+        return $model;
+    }
+
+    public static function createFromRecordSpecial($record): AdminTagModel {
+        $model = new AdminTagModel();
+
+        $model->tagId               = $record->tag_id;
+        $model->title                   = $record->title;
+        $model->color                   = $record->color;
+        $model->level                   = $record->level;
+        $model->sequence                = $record->sequence;
+
+        $model->tagKnowledgeArticleId = $record->tag_knowledge_article_allocation_id;
 
         $model->createdAccountId        = $record->created_account_id;
         $model->createdAccountLoginId   = $record->created_account_login_id;

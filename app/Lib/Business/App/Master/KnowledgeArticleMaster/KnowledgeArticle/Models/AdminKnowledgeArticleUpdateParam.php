@@ -2,6 +2,8 @@
 
 namespace App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models;
 
+use App\Lib\Common\Type\DreamerTypeList;
+
 class AdminKnowledgeArticleUpdateParam
 {
     private ?int        $knowledgeArticleId = null;
@@ -9,6 +11,8 @@ class AdminKnowledgeArticleUpdateParam
     private string      $title;
 
     private int         $subjectId;
+
+    private  DreamerTypeList $knowledgeArticleTagList;
 
     /**
      * @return int|null
@@ -56,5 +60,21 @@ class AdminKnowledgeArticleUpdateParam
     public function setSubjectId(int $subjectId): void
     {
         $this->subjectId = $subjectId;
+    }
+
+    /**
+     * @return DreamerTypeList
+     */
+    public function getKnowledgeArticleTagList(): DreamerTypeList
+    {
+        return $this->knowledgeArticleTagList;
+    }
+
+    /**
+     * @param DreamerTypeList $knowledgeArticleTagList
+     */
+    public function setKnowledgeArticleTagList(DreamerTypeList $knowledgeArticleTagList): void
+    {
+        $this->knowledgeArticleTagList = $knowledgeArticleTagList;
     }
 }

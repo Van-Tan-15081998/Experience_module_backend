@@ -7,6 +7,7 @@ use App\Lib\Business\App\Master\KnowledgeArticleMaster\Subject\Models\AdminSubje
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\Subject\Models\AdminSubjectModel;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\Subject\Models\AdminSubjectPaginationModel;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\Subject\Models\AdminSubjectUpdateParam;
+use App\Lib\Business\App\Master\KnowledgeArticleMaster\Tag\Models\AdminTagModel;
 use App\Lib\Business\Common\Exception\DreamerBusinessException;
 use App\Lib\Business\Common\Exception\DreamerExceptionConverter;
 use App\Lib\Business\Constants\DreamerCommonErrorCode;
@@ -338,6 +339,34 @@ class SubjectEntity extends Model
         return $param->getSubjectId();
     }
 
+    public function deleteSubject(AdminSubjectUpdateParam $param): int
+    {
+        /**
+         * Hàm update của Laravel (Query builder) sẽ trả về id của record vừa update thành công
+         **/
+        DB::table('kam__subjects')
+            ->where('subject_id', '=', $param->getSubjectId())
+            ->update([
+                'is_deleted'     => true
+            ]);
+
+        return $param->getSubjectId();
+    }
+
+    public function revertDeleteSubject(AdminSubjectUpdateParam $param): int
+    {
+        /**
+         * Hàm update của Laravel (Query builder) sẽ trả về id của record vừa update thành công
+         **/
+        DB::table('kam__subjects')
+            ->where('subject_id', '=', $param->getSubjectId())
+            ->update([
+                'is_deleted'     => false
+            ]);
+
+        return $param->getSubjectId();
+    }
+
     public function doUpdateParentSubject(int $subjectId, AdminSubjectUpdateParam $param)
     {
         // Params for update or insert
@@ -576,6 +605,24 @@ class SubjectEntity extends Model
 
         foreach ($result as $record) {
             $knowledgeArticle = AdminKnowledgeArticleModel::createFromRecord($record);
+
+            // Get Tags
+            $tagQuery =
+                "SELECT *"
+                . " FROM kam__tags"
+                . " JOIN kam__tag_knowledge_article_allocations"
+                .   " ON kam__tag_knowledge_article_allocations.tag_id = kam__tags.tag_id"
+                .   " AND kam__tags.is_deleted = 0"
+                . " WHERE kam__tag_knowledge_article_allocations.knowledge_article_id = " . $knowledgeArticle->getKnowledgeArticleId()
+                .   " AND kam__tag_knowledge_article_allocations .is_deleted = 0";
+            $tags = DB::select($tagQuery);
+            $tagResult = new DreamerTypeList([]);
+            foreach ($tags as $tag) {
+                $tagResult->add(AdminTagModel::createFromRecord($tag));
+            }
+
+            $knowledgeArticle->setTagList($tagResult);
+
             $knowledgeArticleList->add($knowledgeArticle);
         }
 

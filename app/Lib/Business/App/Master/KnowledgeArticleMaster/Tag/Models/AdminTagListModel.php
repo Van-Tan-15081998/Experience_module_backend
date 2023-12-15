@@ -1,96 +1,107 @@
 <?php
 
-namespace App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models;
+namespace App\Lib\Business\App\Master\KnowledgeArticleMaster\Tag\Models;
 
-use App\Lib\Common\Type\DreamerTypeList;
 use App\Lib\Common\Type\DreamerTypeObject;
 
-class AdminKnowledgeArticleModel extends DreamerTypeObject
+class AdminTagListModel extends DreamerTypeObject
 {
-    private int             $knowledgeArticleId;
-    private string          $title;
+    private ?int         $tagId;
+    private ?string      $title;
+    private ?string      $color;
+    private ?int         $level;
+    private ?int         $sequence;
 
-//    private int             $subjectId;
-
-    private DreamerTypeList $unitContentList;
-    private DreamerTypeList $tagList;
-
-    private ?int            $createdAccountId;
-    private ?int            $createdAccountLoginId;
-    private ?string         $createdAccountName;
-    private ?string         $createdDatetime;
-    private ?int            $updatedAccountId;
-    private ?int            $updatedAccountLoginId;
-    private ?string         $updatedAccountName;
-    private ?string         $updatedDatetime;
-    private ?int            $recordVersion;
-    private ?bool           $isDeleted;
+    private ?int        $createdAccountId;
+    private ?int        $createdAccountLoginId;
+    private ?string      $createdAccountName;
+    private ?string      $createdDatetime;
+    private ?int        $updatedAccountId;
+    private ?int        $updatedAccountLoginId;
+    private ?string      $updatedAccountName;
+    private ?string      $updatedDatetime;
+    private ?int        $recordVersion;
+    private ?bool       $isDeleted;
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getKnowledgeArticleId(): int
+    public function getTagId(): ?int
     {
-        return $this->knowledgeArticleId;
+        return $this->tagId;
     }
 
     /**
-     * @param int $knowledgeArticleId
+     * @param int|null $tagId
      */
-    public function setKnowledgeArticleId(int $knowledgeArticleId): void
+    public function setTagId(?int $tagId): void
     {
-        $this->knowledgeArticleId = $knowledgeArticleId;
+        $this->tagId = $tagId;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
     /**
-     * @param string $title
+     * @param string|null $title
      */
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
     /**
-     * @return DreamerTypeList
+     * @return string|null
      */
-    public function getUnitContentList(): DreamerTypeList
+    public function getColor(): ?string
     {
-        return $this->unitContentList;
+        return $this->color;
     }
 
     /**
-     * @param DreamerTypeList $unitContentList
+     * @param string|null $color
      */
-    public function setUnitContentList(DreamerTypeList $unitContentList): void
+    public function setColor(?string $color): void
     {
-        $this->unitContentList = $unitContentList;
+        $this->color = $color;
     }
 
-//    /**
-//     * @return int
-//     */
-//    public function getSubjectId(): int
-//    {
-//        return $this->subjectId;
-//    }
-//
-//    /**
-//     * @param int $subjectId
-//     */
-//    public function setSubjectId(int $subjectId): void
-//    {
-//        $this->subjectId = $subjectId;
-//    }
+    /**
+     * @return int|null
+     */
+    public function getLevel(): ?int
+    {
+        return $this->level;
+    }
 
+    /**
+     * @param int|null $level
+     */
+    public function setLevel(?int $level): void
+    {
+        $this->level = $level;
+    }
 
+    /**
+     * @return int|null
+     */
+    public function getSequence(): ?int
+    {
+        return $this->sequence;
+    }
+
+    /**
+     * @param int|null $sequence
+     */
+    public function setSequence(?int $sequence): void
+    {
+        $this->sequence = $sequence;
+    }
 
     /**
      * @return int|null
@@ -252,67 +263,14 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
         $this->isDeleted = $isDeleted;
     }
 
-    /**
-     * @return DreamerTypeList
-     */
-    public function getTagList(): DreamerTypeList
-    {
-        return $this->tagList;
-    }
+    public static function createFromRecord($record): AdminTagListModel {
+        $model = new AdminTagListModel();
 
-    /**
-     * @param DreamerTypeList $tagList
-     */
-    public function setTagList(DreamerTypeList $tagList): void
-    {
-        $this->tagList = $tagList;
-    }
-
-    public function init(): void
-    {
-        $this->title                   = 'Title mẫu nha';
-
-        $this->createdAccountId        = null;
-        $this->createdAccountLoginId   = null;
-        $this->createdAccountName      = '';
-        $this->createdDatetime         = '';
-        $this->updatedAccountId        = null;
-        $this->updatedAccountLoginId   = null;
-        $this->updatedAccountName      = '';
-        $this->updatedDatetime         = '';
-        $this->recordVersion           = null;
-        $this->isDeleted               = null;
-    }
-
-    public static function createFromRecord($record): AdminKnowledgeArticleModel {
-        $model = new AdminKnowledgeArticleModel();
-
-        $model->knowledgeArticleId      = $record->knowledge_article_id;
+        $model->tagId               = $record->tag_id;
         $model->title                   = $record->title;
-
-//        $model->subjectId               = $record->subject_id;
-
-        $model->createdAccountId        = $record->created_account_id;
-        $model->createdAccountLoginId   = $record->created_account_login_id;
-        $model->createdAccountName      = $record->created_account_name;
-        $model->createdDatetime         = $record->created_datetime;
-        $model->updatedAccountId        = $record->updated_account_id;
-        $model->updatedAccountLoginId   = $record->updated_account_login_id;
-        $model->updatedAccountName      = $record->updated_account_name;
-        $model->updatedDatetime         = $record->updated_datetime;
-        $model->recordVersion           = $record->record_version;
-        $model->isDeleted               = $record->is_deleted;
-
-        return $model;
-    }
-
-    public static function createFromRecordForEdit($record): AdminKnowledgeArticleModel {
-        $model = new AdminKnowledgeArticleModel();
-
-        $model->knowledgeArticleId      = $record->knowledge_article_id;
-        $model->title                   = $record->title;
-
-//        $model->subjectId               = $record->subject_id;
+        $model->color                   = $record->color;
+        $model->level                   = $record->level;
+        $model->sequence                = $record->sequence;
 
         $model->createdAccountId        = $record->created_account_id;
         $model->createdAccountLoginId   = $record->created_account_login_id;

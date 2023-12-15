@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Master\KnowledgeArticleMaster\KnowledgeArticle;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models\AdminKnowledgeArticleUpdateParam;
+use App\Lib\Common\Type\DreamerTypeList;
 use Illuminate\Foundation\Http\FormRequest;
 
 class KnowledgeArticleNewRequest extends FormRequest
@@ -41,6 +42,7 @@ class KnowledgeArticleNewRequest extends FormRequest
         // Mode new cần subjectId
         $updateParam->setSubjectId((int) $this->subjectId);
 
+        $updateParam->setKnowledgeArticleTagList(new DreamerTypeList($this->tagList));
 
         return $updateParam;
     }

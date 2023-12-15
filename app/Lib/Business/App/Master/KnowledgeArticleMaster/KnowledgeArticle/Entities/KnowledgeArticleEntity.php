@@ -8,6 +8,7 @@ use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models\A
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticle\Models\AdminKnowledgeArticleUpdateParam;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\AdminKnowledgeArticleContentUnitModel;
 use App\Lib\Business\App\Master\KnowledgeArticleMaster\KnowledgeArticleContentUnit\Models\KnowledgeArticleImageContentUnit\KnowledgeArticleImageContentUnitModel;
+use App\Lib\Business\App\Master\KnowledgeArticleMaster\Tag\Models\AdminTagModel;
 use App\Lib\Business\Common\Exception\DreamerBusinessException;
 use App\Lib\Business\Common\Exception\DreamerExceptionConverter;
 use App\Lib\Business\Constants\DreamerCommonErrorCode;
@@ -181,12 +182,12 @@ class KnowledgeArticleEntity extends Model
 
     // TODO: [Bookmark] __________[ getById ]__________</>
     //
-    public function getById(int $subjectId): AdminKnowledgeArticleModel
+    public function getById(int $knowledgeArticleId): AdminKnowledgeArticleModel
     {
         $detail = null;
 
         try {
-            $detail = $this->_selectById($subjectId);
+            $detail = $this->_selectById($knowledgeArticleId);
 
 
         } catch (\Exception $e) {
@@ -228,7 +229,6 @@ class KnowledgeArticleEntity extends Model
             .   " AND kam__ka_ka_content_unit_allocations.is_deleted = 0";
 
         $unitContentList = DB::select($getUnitContentQuery);
-
         $unitContentListResult = new DreamerTypeList([]);
 
         foreach($unitContentList as $unitContent) {
@@ -239,6 +239,27 @@ class KnowledgeArticleEntity extends Model
         }
 
         $adminKnowledgeArticle->setUnitContentList($unitContentListResult);
+
+        // Lấy danh sách Tag
+        $getTagQuery =
+            "SELECT *"
+            .   " FROM kam__tags"
+            .   " JOIN kam__tag_knowledge_article_allocations"
+            .       " ON kam__tag_knowledge_article_allocations.tag_id = kam__tags.tag_id"
+            .       " AND kam__tag_knowledge_article_allocations.knowledge_article_id = " . $knowledgeArticleId
+            .   " WHERE kam__tags.is_deleted = 0"
+            .   " AND kam__tag_knowledge_article_allocations.is_deleted = 0";
+
+        $tagList = DB::select($getTagQuery);
+        $tagListResult = new DreamerTypeList([]);
+
+        foreach ($tagList as $tag) {
+            $item = AdminTagModel::createFromRecord($tag);
+
+            $tagListResult->add($item);
+        }
+
+        $adminKnowledgeArticle->setTagList($tagListResult);
 
         return $adminKnowledgeArticle;
     }
@@ -329,12 +350,25 @@ class KnowledgeArticleEntity extends Model
         );
 
         if($knowledgeArticleId) {
+            // Insert Subject
             DB::table('kam__subject_knowledge_article_allocations')->insert(
                 [
                     'knowledge_article_id'  => $knowledgeArticleId,
                     'subject_id'            => $param->getSubjectId()
                 ]
             );
+
+            // Insert Tags
+            if(count($param->getKnowledgeArticleTagList()->getList()) > 0) {
+                foreach ($param->getKnowledgeArticleTagList()->getList() as $tag) {
+                    DB::table('kam__tag_knowledge_article_allocations')->insert(
+                        [
+                            'tag_id'  => $tag,
+                            'knowledge_article_id'            => $knowledgeArticleId
+                        ]
+                    );
+                }
+            }
         }
 
         return $knowledgeArticleId;
@@ -361,6 +395,29 @@ class KnowledgeArticleEntity extends Model
                     'title'     => $param->getTitle(),
                 ]);
 
+            // Update Tags
+
+                // Delete all tags
+                DB::table('kam__tag_knowledge_article_allocations')
+                    ->where('knowledge_article_id','=',$param->getKnowledgeArticleId())
+                    ->where('is_deleted', '=', 0)
+                    -> update([
+                        'is_deleted'     => 1,
+                    ]);
+
+                // Insert new tags
+                if(count($param->getKnowledgeArticleTagList()->getList()) > 0) {
+                    foreach ($param->getKnowledgeArticleTagList()->getList() as $tag) {
+                        DB::table('kam__tag_knowledge_article_allocations')->insert(
+                            [
+                                'tag_id'  => $tag,
+                                'knowledge_article_id'            => $param->getKnowledgeArticleId()
+                            ]
+                        );
+                    }
+                }
+
+
         } catch (Exception $e) {
             DreamerExceptionConverter::convertException($e);
         }
@@ -376,4 +433,65 @@ class KnowledgeArticleEntity extends Model
 
         return $param->getKnowledgeArticleId();
     }
+
+    public function getTagList(): DreamerTypeList
+    {
+        return $this->selectTagList();
+    }
+
+    public function selectTagList(): DreamerTypeList
+    {
+        $query =
+            "SELECT *"
+            . " FROM kam__tags"
+            . " WHERE kam__tags.is_deleted = 0 ";
+
+        $result = DB::select($query);
+
+        if (is_null($result) || empty($result)) {
+            return new DreamerTypeList([]);
+        }
+
+        $tagList = new DreamerTypeList([]);
+
+        foreach ($result as $record) {
+            $tag = AdminTagModel::createFromRecord($record);
+            $tagList->add($tag);
+        }
+
+        return $tagList;
+    }
+
+    public function getTagListByKnowledgeArticleId(int $knowledgeArticleId): DreamerTypeList
+    {
+        return $this->selectTagListByKnowledgeArticleId($knowledgeArticleId);
+    }
+
+    public function selectTagListByKnowledgeArticleId(int $knowledgeArticleId): DreamerTypeList
+    {
+        $query =
+            "SELECT *"
+            . " FROM kam__tag_knowledge_article_allocations "
+            . " JOIN kam__tags"
+            .   " ON kam__tag_knowledge_article_allocations.tag_id = kam__tags.tag_id"
+            .   " AND kam__tags.is_deleted = 0"
+            . " WHERE kam__tag_knowledge_article_allocations.knowledge_article_id = " . $knowledgeArticleId
+            .   " AND kam__tag_knowledge_article_allocations .is_deleted = 0";
+
+        $result = DB::select($query);
+
+        if (is_null($result) || empty($result)) {
+            return new DreamerTypeList([]);
+        }
+
+        $tagList = new DreamerTypeList([]);
+
+        foreach ($result as $record) {
+            $tag = AdminTagModel::createFromRecordSpecial($record);
+            $tagList->add($tag);
+        }
+
+        return $tagList;
+    }
+
 }

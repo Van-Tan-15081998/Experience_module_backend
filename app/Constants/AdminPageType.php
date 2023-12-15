@@ -20,6 +20,9 @@ class AdminPageType extends Enum
 
     public const MASTER_KNOWLEDGE_ARTICLE_MASTER_SEARCH = [80000009];
 
+    public const MASTER_KNOWLEDGE_ARTICLE_TAG_LIST = [80000010];
+    public const MASTER_KNOWLEDGE_ARTICLE_TAG_DETAIL = [80000011];
+
     public function getId(): int
     {
         return $this->value[0];

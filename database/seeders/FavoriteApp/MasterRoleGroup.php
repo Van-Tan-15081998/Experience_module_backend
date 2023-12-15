@@ -40,6 +40,12 @@ class MasterRoleGroup extends Seeder
                 'name'              => 'Knowledge Article Content Unit Role Group',
                 'is_invalid'        => false,
                 'sequence'          => 0
+            ],
+            [
+                'role_group_id'     => 5,
+                'name'              => 'Tag Role Group',
+                'is_invalid'        => false,
+                'sequence'          => 0
             ]
         ]);
     }

@@ -18,6 +18,7 @@ use Database\Seeders\KnowledgeArticle\KnowledgeArticleSeeder;
 use Database\Seeders\KnowledgeArticle\SubjectBranchSubjectAllocationSeeder;
 use Database\Seeders\KnowledgeArticle\SubjectKnowledgeArticleAllocationSeeder;
 use Database\Seeders\KnowledgeArticle\SubjectSeeder;
+use Database\Seeders\KnowledgeArticle\TagDefaultColorSeeder;
 use Database\Seeders\LaravelResearch\DepartmentSeeder;
 use Database\Seeders\LaravelResearch\EmployeePositionSeeder;
 use Database\Seeders\LaravelResearch\EmployeeSeeder;
@@ -44,10 +45,11 @@ class DatabaseSeeder extends Seeder
             BookLanguageAllocationSeeder::class,
             LanguageSeeder::class,
 
-            SubjectSeeder::class,
+//            SubjectSeeder::class,
             SubjectKnowledgeArticleAllocationSeeder::class,
             KnowledgeArticleSeeder::class,
-            SubjectBranchSubjectAllocationSeeder::class,
+//            SubjectBranchSubjectAllocationSeeder::class,
+            TagDefaultColorSeeder::class,
 
             StaffAccountSeeder::class,
             MasterFunction::class,

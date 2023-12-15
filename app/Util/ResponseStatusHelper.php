@@ -55,4 +55,12 @@ class ResponseStatusHelper
             'Đã cập nhật'
         );
     }
+
+    public static function createUpdateForDeleteSuccessful(): ResponseStatus
+    {
+        return ResponseStatus::createSuccessfulStatus(
+            MessageType::INFO(),
+            'Đã xóa'
+        );
+    }
 }

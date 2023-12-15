@@ -36,6 +36,11 @@ class MasterRoleGroupRoleAllocation extends Seeder
                 'role_group_role_allocation_id'     => 4,
                 'role_group_id'                     => 4,
                 'role_id'                           => 4
+            ],
+            [
+                'role_group_role_allocation_id'     => 5,
+                'role_group_id'                     => 5,
+                'role_id'                           => 5
             ]
         ]);
     }

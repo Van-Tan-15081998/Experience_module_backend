@@ -1,38 +1,29 @@
 <?php
 
-namespace App\Http\Controllers\Master\KnowledgeArticleMaster\MasterSearch;
+namespace App\Http\Controllers\Master\KnowledgeArticleMaster\Tag;
 
-use App\Lib\Business\App\Master\KnowledgeArticleMaster\MasterSearch\Models\AdminMasterSearchCondition;
+use App\Lib\Business\App\Master\KnowledgeArticleMaster\Tag\Models\AdminTagCondition;
 use Illuminate\Foundation\Http\FormRequest;
 
-class MasterSearchRequest extends FormRequest
+class TagListRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return true;
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
-            'searchString' => 'required|max:255',
+
         ];
     }
 
     public function messages(): array
     {
         return [
-            'searchString.required'            => 'Từ khóa là bắt buộc',
+
         ];
-    }
-
-    public function getSearchParam(): AdminMasterSearchCondition
-    {
-        $searchParam = new AdminMasterSearchCondition();
-
-        $searchParam->setSearchString($this->searchString);
-
-        return $searchParam;
     }
 
     public function getPageNo(): int
@@ -58,14 +49,18 @@ class MasterSearchRequest extends FormRequest
         }
     }
 
-    public function getSearchCondition(): AdminMasterSearchCondition
+    public function getSearchCondition(): AdminTagCondition
     {
-        $condition = new AdminMasterSearchCondition();
+        $condition = new AdminTagCondition();
 
         if($this->has('searchCondition')) {
             // TODO
         }
 
         return $condition;
+    }
+
+    public function getExportCondition() {
+
     }
 }

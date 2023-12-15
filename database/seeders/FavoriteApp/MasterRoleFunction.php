@@ -111,6 +111,30 @@ class MasterRoleFunction extends Seeder
                 'is_delete'             => 0,
                 'is_upload'             => 0,
                 'is_download'           => 0
+            ],
+
+            // Tag
+            [
+                'role_function_id'      => 9,
+                'role_id'               => 5,
+                'function_id'           => 9,
+                'is_browse'            => 1,
+                'is_registration'       => 0,
+                'is_edit'               => 0,
+                'is_delete'             => 1,
+                'is_upload'             => 0,
+                'is_download'           => 0
+            ],
+            [
+                'role_function_id'      => 10,
+                'role_id'               => 5,
+                'function_id'           => 10,
+                'is_browse'            => 1,
+                'is_registration'       => 1,
+                'is_edit'               => 1,
+                'is_delete'             => 0,
+                'is_upload'             => 0,
+                'is_download'           => 0
             ]
         ]);
     }

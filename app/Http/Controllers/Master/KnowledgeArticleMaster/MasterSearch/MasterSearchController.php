@@ -8,6 +8,7 @@ use App\Lib\Business\App\Master\KnowledgeArticleMaster\MasterSearch\MasterSearch
 use App\Lib\Business\Common\Exception\DreamerBusinessException;
 use App\Lib\Common\Type\DreamerTypeList;
 use App\Lib\Common\Type\DreamerTypeObject;
+use App\Lib\WebCommon\Constants\MessageType;
 use App\Lib\WebCommon\Helpers\ResponseArrayModel;
 use App\Lib\WebCommon\Helpers\ResponseStatus;
 use App\Util\ResponseStatusHelper;
@@ -33,7 +34,8 @@ class MasterSearchController extends MasterSearchBaseController
             parent::OPTIONAL_MODE => $mode
         ];
 
-        $resultArray = $this->getSearch($request);
+//        $resultArray = $this->getSearch($request);
+        $resultArray = $this->getInitialDisplayData($request);
 
         $data = $resultArray['data'];
         $status = $resultArray['status'];
@@ -59,6 +61,66 @@ class MasterSearchController extends MasterSearchBaseController
 
         } catch (DreamerBusinessException $e) {
 
+        }
+
+        return [
+            "data" => $data,
+            "status" => $status
+        ];
+    }
+
+    private function getInitialDisplayData(MasterSearchRequest $request): array
+    {
+        $data   = new ResponseArrayModel();
+        $status = null;
+
+        $isSucceeded = false;
+
+        try {
+            $page               = $this->masterSearchBusiness->getPage($request);
+            $data->addResponseItem('page', $page);
+
+            $isSucceeded    = true;
+        } catch (DreamerBusinessException $e) {
+
+            $code       = $e->getExceptionCode();
+
+            $errMessage = $this->getErrorMessage($code,
+                'Get Data Error');
+
+            $status     = ResponseStatus::createErrorStatus(
+                $code,
+                $e->getExceptionMessage(),
+                $errMessage
+            );
+        }
+
+        if($isSucceeded) {
+
+                // TODO
+                try {
+                    $selectionItems = new ResponseArrayModel();
+
+                    $selectionItems = $this->masterSearchBusiness->getSelectionItems();
+
+                    $selectionItems = $selectionItems->toArray();
+
+                    // Nếu có bất cứ một item nào trong list là rỗng thì báo lỗi
+                    if ($selectionItems['isExistsEmptyList']) {
+                        $status = ResponseStatus::createSuccessfulStatus(
+                            MessageType::ERROR(),
+                            __('admin_common_message.common_err_noMasterData_00-03-000004')
+                        );
+                    }
+
+                    $data->addResponseItem('selectionItems', $selectionItems['searchItems']);
+                } catch (DreamerBusinessException $e) {
+
+                    $status = ResponseStatus::createErrorStatus(
+                        $e->getExceptionCode(),
+                        $e->getExceptionMessage(),
+                    );
+                }
         }
 
         return [

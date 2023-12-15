@@ -193,6 +193,62 @@ class SubjectBusiness extends ExperienceBaseBusiness
      * TODO: Update - End ]
      **/
 
+    /**
+     * TODO: Delete - Start [
+     **/
+
+    public function delete(SubjectUpdateRequest $request): int
+    {
+        // Get update params
+        $updateParam = $request->getUpdateParam();
+
+        // Validate input params
+        $errors = $this->validateSaveParams($updateParam, $request);
+
+        if (isset($errors)) {
+            throw new DreamerValidationBusinessException($errors);
+        }
+
+        return $this->_delete($updateParam);
+    }
+
+    private function _delete(AdminSubjectUpdateParam $param): int
+    {
+        $result = null;
+
+        // Khối try catch để catch các lỗi trong quá trình thao tác với Database
+        try {
+            $result = $this->_deleteSubject($param);
+
+        } catch (\Exception $e) {
+
+            DreamerExceptionConverter::convertException($e);
+        }
+
+        return $result;
+    }
+
+    private function _deleteSubject(AdminSubjectUpdateParam $param): int {
+
+        $isValid = $this->validateUpdateParams($param);
+
+        // Nếu xảy ra lỗi [[['Dữ liệu không thống nhất' - DreamerCommonErrorCode::E00000000004()]]]
+        if (!$isValid) {
+            throw new DreamerBusinessException(
+                DreamerCommonErrorCode::E00000000004()->getCode(),
+                DreamerCommonErrorCode::E00000000004()->getDescription()
+            );
+        }
+
+        $subjectId = $this->subjectEntity->deleteSubject($param);
+
+        return $subjectId;
+    }
+
+    /**
+     * TODO: Delete - End ]
+     **/
+
     private function validateUpdateParams(AdminSubjectUpdateParam $param): bool
     {
         return true;
