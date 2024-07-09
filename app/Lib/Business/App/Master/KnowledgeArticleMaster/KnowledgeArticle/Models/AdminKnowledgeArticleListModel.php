@@ -8,6 +8,7 @@ class AdminKnowledgeArticleListModel extends DreamerTypeObject
 {
     private ?int         $knowledgeArticleId;
     private ?string      $title;
+    private ?string      $coverImage;
 
     private ?int        $createdAccountId;
     private ?int        $createdAccountLoginId;
@@ -50,6 +51,22 @@ class AdminKnowledgeArticleListModel extends DreamerTypeObject
     public function setTitle(?string $title): void
     {
         $this->title = $title;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCoverImage(): ?string
+    {
+        return $this->coverImage;
+    }
+
+    /**
+     * @param string|null $coverImage
+     */
+    public function setCoverImage(?string $coverImage): void
+    {
+        $this->coverImage = $coverImage;
     }
 
     /**
@@ -217,6 +234,7 @@ class AdminKnowledgeArticleListModel extends DreamerTypeObject
 
         $model->knowledgeArticleId      = $record->knowledge_article_id;
         $model->title                   = $record->title;
+        $model->coverImage                   = $record->cover_image ?? '';
 
         $model->createdAccountId        = $record->created_account_id;
         $model->createdAccountLoginId   = $record->created_account_login_id;

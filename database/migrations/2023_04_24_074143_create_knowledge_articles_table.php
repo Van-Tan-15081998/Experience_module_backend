@@ -19,6 +19,7 @@ return new class extends Migration
         Schema::create('kam__knowledge_articles', function (Blueprint $table) {
             $table->bigIncrements('knowledge_article_id');
             $table->string('title', 240)->default('');
+            $table->string('cover_image', 240)->default('');
 
             $table->string('title_slug', 300)->default('');
 

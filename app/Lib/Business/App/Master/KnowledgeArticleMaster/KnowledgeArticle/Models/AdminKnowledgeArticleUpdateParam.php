@@ -10,6 +10,8 @@ class AdminKnowledgeArticleUpdateParam
 
     private string      $title;
 
+    private string      $coverImage;
+
     private int         $subjectId;
 
     private  DreamerTypeList $knowledgeArticleTagList;
@@ -44,6 +46,22 @@ class AdminKnowledgeArticleUpdateParam
     public function setTitle(string $title): void
     {
         $this->title = $title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCoverImage(): string
+    {
+        return $this->coverImage;
+    }
+
+    /**
+     * @param string $coverImage
+     */
+    public function setCoverImage(string $coverImage): void
+    {
+        $this->coverImage = $coverImage;
     }
 
     /**

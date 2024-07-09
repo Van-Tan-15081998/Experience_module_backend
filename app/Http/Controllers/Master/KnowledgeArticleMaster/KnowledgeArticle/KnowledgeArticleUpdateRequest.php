@@ -37,6 +37,7 @@ class KnowledgeArticleUpdateRequest extends FormRequest
 
         $updateParam->setKnowledgeArticleId($this->knowledgeArticleId);
         $updateParam->setTitle($this->title);
+        $updateParam->setCoverImage($this->coverImage ?? '');
         $updateParam->setKnowledgeArticleTagList(new DreamerTypeList($this->tagList));
 
         return $updateParam;

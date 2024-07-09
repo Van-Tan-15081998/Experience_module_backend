@@ -38,6 +38,7 @@ class KnowledgeArticleNewRequest extends FormRequest
 
         $updateParam->setKnowledgeArticleId($this->knowledgeArticleId);
         $updateParam->setTitle($this->title);
+        $updateParam->setCoverImage($this->coverImage ?? '');
 
         // Mode new cần subjectId
         $updateParam->setSubjectId((int) $this->subjectId);

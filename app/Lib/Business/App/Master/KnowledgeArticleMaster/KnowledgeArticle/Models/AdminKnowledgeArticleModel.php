@@ -9,6 +9,7 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
 {
     private int             $knowledgeArticleId;
     private string          $title;
+    private string          $coverImage;
 
 //    private int             $subjectId;
 
@@ -56,6 +57,22 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
     public function setTitle(string $title): void
     {
         $this->title = $title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCoverImage(): string
+    {
+        return $this->coverImage;
+    }
+
+    /**
+     * @param string $coverImage
+     */
+    public function setCoverImage(string $coverImage): void
+    {
+        $this->coverImage = $coverImage;
     }
 
     /**
@@ -271,6 +288,7 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
     public function init(): void
     {
         $this->title                   = 'Title mẫu nha';
+        $this->coverImage                   = '';
 
         $this->createdAccountId        = null;
         $this->createdAccountLoginId   = null;
@@ -289,6 +307,7 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
 
         $model->knowledgeArticleId      = $record->knowledge_article_id;
         $model->title                   = $record->title;
+        $model->coverImage          = $record->cover_image ?? '';
 
 //        $model->subjectId               = $record->subject_id;
 
@@ -311,6 +330,7 @@ class AdminKnowledgeArticleModel extends DreamerTypeObject
 
         $model->knowledgeArticleId      = $record->knowledge_article_id;
         $model->title                   = $record->title;
+        $model->coverImage          = $record->cover_image ?? '';
 
 //        $model->subjectId               = $record->subject_id;
 

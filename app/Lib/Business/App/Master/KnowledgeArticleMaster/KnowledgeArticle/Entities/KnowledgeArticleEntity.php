@@ -63,6 +63,7 @@ class KnowledgeArticleEntity extends Model
     protected $fillable = [
         'knowledge_article_id',
         'title',
+        'cover_image',
         'title_slug',
 
         'created_account_id',
@@ -346,6 +347,7 @@ class KnowledgeArticleEntity extends Model
             [
                 'title'     => $param->getTitle(),
                 'title_slug' => DreamerStringUtil::toSlug($param->getTitle()),
+                'cover_image' => $param->getCoverImage()
             ]
         );
 
@@ -393,6 +395,7 @@ class KnowledgeArticleEntity extends Model
                 ->where('is_deleted', '=', 0)
                 ->update([
                     'title'     => $param->getTitle(),
+                    'cover_image'   => $param->getCoverImage()
                 ]);
 
             // Update Tags
